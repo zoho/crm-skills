@@ -1,0 +1,55 @@
+FILE_PURPOSE: Read when authoring a CRM Connection (Setup → Developer Hub → Connections) for invoking a third-party OAuth 2.0 API from Deluge Functions or Widget egress surfaces.
+SOURCE_DOC: https://www.zoho.com/crm/developer/docs/connectors/set-up.html
+TRIGGER_KEYWORDS: Connections, Developer Hub, Custom Service, OAuth 2.0, Client ID, Authorize URL, Access Token URL, Refresh Token URL, link name, invokeurl
+
+TECHNICAL_CONSTRAINTS:
+- Connections live at `Setup → Developer Hub → Connections` and split across two tabs — `Pick Your Service` (pre-built integrations published by Zoho) and `Custom Service` (BYO third-party OAuth 2.0 endpoint).
+- `Pick Your Service` entries ship with their OAuth client (`Client ID` / `Client Secret`) pre-registered by Zoho — the author supplies only a `Connection name` to instantiate one. `Custom Service` is the only path where the author must register an OAuth client at the third party and paste its `Client ID` / `Client Secret` into CRM.
+- A Connection abstracts the OAuth 2.0 authorization-code flow plus refresh-token rotation — callers reference the Connection by its **link name** at runtime (`connection:"<link_name>"` clause on `invokeurl`, or `CONNECTION.invoke("<link_name>", …)` from a Widget) and never handle tokens directly.
+- Custom Service `Authentication type` field accepts the protocol family supported by the third-party; OAuth 2.0 is the documented path. The auth-code grant is the only flow exposed by the help page.
+- Custom Service requires nine inputs in this order: `Service name`, `Authentication type`, `Client ID`, `Client Secret`, `Request Token URL` (a.k.a. `Authorize URL`), `Access Token URL`, `Refresh Token URL`, `Connection name`, `Scopes`.
+- Three OAuth parameters are injected by CRM and must NOT be appended to the Authorize / Access / Refresh URLs by hand: `Redirect URL`, `Client ID`, `Response type`. Every other mandatory third-party parameter (`scope`, `state`, `access_type`, custom keys) is the developer's responsibility, encoded into the Authorize URL per the third-party's spec.
+- For Zoho-to-Zoho Custom Services, the Zoho-side OAuth client is registered at `https://accounts.zoho.com/developerconsole` with Redirect URI `https://deluge.zoho.com/delugeauth/callback` and Client Type `Web based`; non-Zoho services register at the third-party's own developer console with their own redirect URI list.
+- `Scopes` value is verbatim from the third-party documentation — CRM does not validate the scope string until the first authorization round-trip against the resource server.
+- The Connection's link name is generated from the user-supplied `Connection name` at the moment of `Create and Connect`; the link name is the only identifier accepted at runtime — the display name is not.
+- Connection HTTP egress executes server-side inside the CRM Function / Widget egress runtime — stored tokens never reach the browser, including the iframe of a Widget that invokes via `ZOHO.CRM.CONNECTION.invoke`.
+- After `Create and Connect`, the Connection surfaces under `Pick Your Service` for re-use by other authors in the same org / DC.
+- Runtime invocation route owns its own keys: Deluge `invokeurl` parameter map uses `parameters` (Deluge syntax); the Widget bridge uses `param` (singular) on `req_data` — see `widgets-jssdk-egress` for the Widget-side contract.
+
+REQUIRED_PARAMETERS:
+- Custom Service lifecycle is **two-stage**:
+  - Stage 1 — Define the service shell: `Setup → Developer Hub → Connections → +Create your First Connection → Custom Service` → fill `Service name`, `Authentication type`, `Client ID`, `Client Secret`, `Request Token URL`, `Access Token URL`, `Refresh Token URL`, `Scopes` → save. The new service definition now appears under `Pick Your Service`.
+  - Stage 2 — Instantiate a runtime Connection: `Setup → Developer Hub → Connections → Pick Your Service → {your custom service} → Connection name → Create and Connect` (browser tab redirects through the third-party consent screen and lands on the CRM callback).
+- Pre-built-service flow (single stage — Zoho-published services already have their OAuth client pre-registered): `Setup → Developer Hub → Connections → Pick Your Service → {service} → Connection name → Create and Connect`.
+- Post-`Create and Connect` envelope (read off the success page): `Link name`, `Service name`, `Status`, plus an auto-generated `invokeurl` snippet pre-filled with the `connection:"<link_name>"` clause — copy the link name from here, not from the display title.
+- Runtime invocation from a Function: `invokeurl [ url :"<absolute_url>" type :GET|POST|PUT|DELETE parameters :<map> headers :<map> connection :"<link_name>" ]`. The `parameters` map is the templating slot for substituting per-record / per-call dynamic values into the third-party URL or body.
+- Runtime invocation from a Widget: `ZOHO.CRM.CONNECTION.invoke("<link_name>", { url, method, param?, headers?, body? })` — see `widgets-jssdk-egress`.
+- Third-party-side prerequisite (Custom Service only): an OAuth 2.0 client registered at the resource server whose redirect URI list includes the CRM-side callback that the Authorize URL flow lands on (varies per service — read the third-party's OAuth setup doc before authoring).
+
+UI_ONLY_ACTIONS:
+- Create / list / edit / delete a Connection: `Setup → Developer Hub → Connections`. Note: No API equivalent — Connection definitions are admin-only Setup objects.
+- Re-authorize an expired refresh token: `Setup → Developer Hub → Connections → {connection} → Authorize`. Note: No API equivalent — must be re-triggered by a human admin from the Setup UI.
+- Register a Zoho-side OAuth client (Zoho-to-Zoho integrations only): visit `https://accounts.zoho.com/developerconsole`, then `Add Client ID` → `Client Type: Web based` → `Redirect URI: https://deluge.zoho.com/delugeauth/callback` → `Create`. Note: No API equivalent — Zoho-Accounts developer console is UI-only.
+- Read the third-party's API documentation for its exact OAuth Authorize / Access / Refresh endpoints and scope-string syntax before opening the Custom Service form. Note: No API equivalent — third-party-side discovery is doc-driven.
+
+CRITICAL_FAILURE_MODES:
+- Connection referenced from `invokeurl` / `CONNECTION.invoke` by its display name instead of the generated link name: runtime returns connection-not-found, no callable surface — `label-vs-api-name`.
+- `Redirect URL`, `Client ID`, or `Response type` appended manually to the Authorize URL: auto-injected duplicates collide with the third-party's parser and the consent screen rejects the request — leave the three Zoho-managed parameters out of the configured URLs.
+- Custom Service Authorize URL configured without the third-party's mandatory `scope` / `state` / `access_type`: the OAuth handshake completes against CRM but the access token is missing the required claim, and the resource server returns 403 only on the first runtime API call.
+- Zoho-side OAuth client registered with a Redirect URI other than `https://deluge.zoho.com/delugeauth/callback`: the auth-code callback never reaches Deluge and the Connection stays in the `Not Connected` state with no actionable error.
+- `Scopes` field configured with a superset of what the third-party's client app was registered for: the third-party silently downgrades the granted scope on the access token — verify the effective scope after first authorization, not at config time.
+- Connection's stored refresh token expired per third-party policy: every subsequent runtime call returns auth-error; admin re-`Authorize` from `Setup → Developer Hub → Connections` is the only recovery — there is no programmatic refresh endpoint.
+- Two authors create separate Custom Service Connections against the same third-party with diverging scope sets: runtime behaviour differs by link name, hard to debug — consolidate to one Connection per service per org.
+- Connection created in sandbox but referenced from a production Function: link names are not auto-promoted across environments — re-create in production before promoting the Function.
+- `Client Secret` rotated at the third-party without re-saving in CRM: token-refresh fails silently the next time the access token expires — update `Client Secret` in the Connection immediately on third-party rotation.
+- Connection's `Authorize URL` set to an OAuth1 endpoint for a service that also exposes OAuth2 (legacy Twitter pattern): consent screen errors and CRM does not surface the protocol mismatch — confirm OAuth2 endpoints in the third-party's current API reference.
+- Pre-built service deleted and re-created with the same `Connection name`: the link name is regenerated per creation event, so existing `invokeurl` references break — keep the original link name or refactor every caller.
+- `Service name` / `Connection name` containing a forward slash, colon, or `?`: generated link name truncates and downstream calls miss the suffix — use alphanumeric + underscore identifiers.
+- Connection used inside a recursive Function call graph: each invocation consumes the org's daily Function-execution credits and the third-party's rate limit simultaneously — handle the third-party's 429 with explicit backoff.
+- `Scopes` field left empty on a service that requires a non-empty scope claim: authorization succeeds against the consent screen but the token grants zero permissions and every API call returns 403.
+- Connection authored against a sandbox third-party endpoint then promoted to production without swapping URLs: production calls hit the sandbox host and return test data — partition Connections by environment in the `Connection name`.
+- Authorize URL containing `state` hardcoded to a static value instead of a per-flow nonce: third-parties enforcing CSRF protection reject the consent callback — supply a per-invocation nonce per the third-party's spec.
+- Token endpoint behind a third-party that issues opaque error bodies on refresh-token revocation: the SDK surface returns a generic auth-error without the revocation detail — capture the raw response in the caller's log before retrying.
+- Custom Service whose third-party rotates the Access-Token URL after a major API version bump: existing Connections continue to point at the old host and fail silently — audit all Connections after every third-party API-version migration.
+- Connection `Client Secret` pasted with trailing whitespace from the third-party developer console: token exchange returns `invalid_client` with no inline hint — trim before saving.
+- Connection authored by an admin who later loses CRM admin rights: Connection still resolves at runtime under the org's stored OAuth, but no other admin can `Authorize` again because edit-permission is profile-gated — re-assign Connection authorship before deactivating the original admin.

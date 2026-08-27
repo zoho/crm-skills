@@ -1,0 +1,7 @@
+# DOU Nodes — Destination Folder
+
+Distilled Operational Understanding (DOU) nodes for the four Zoho CRM developer-tool primitives land here, one node per source page.
+
+Produced by the [`distill-dou`](../../../distill-dou/SKILL.md) skill. Consumed by the parent [`zoho-crm`](../../SKILL.md) skill via its Reference Routing Table.
+
+Naming convention: `<short-slug>.dou.md` (e.g. `queries-execute.dou.md`, `widgets-create.dou.md`, `clientscript-events.dou.md`, `functions-standalone.dou.md`).
