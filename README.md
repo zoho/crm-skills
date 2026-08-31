@@ -69,11 +69,13 @@ Each skill maintains its own version in the YAML frontmatter of its SKILL.md.
 
 For example:
 
+```yaml
 ---
 name: zoho-crm
 description: 'Zoho CRM v8.0 orchestration layer...'
 metadata:
   version: "0.0.1"
 ---
+```
 
 As the repository grows, each skill may evolve independently and follow semantic versioning.
