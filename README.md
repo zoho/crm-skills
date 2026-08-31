@@ -77,14 +77,3 @@ metadata:
 ---
 
 As the repository grows, each skill may evolve independently and follow semantic versioning.
-
-## Contributing
-
-Contributions are welcome.
-
-When adding or modifying a skill:
-
-1. Keep the skill self-contained within its own directory.
-2. Keep agent instructions in SKILL.md.
-3. Keep human-facing documentation in the skill’s README.md.
-4. Keep authoritative reference material in the appropriate references/ or assets/ directories.
