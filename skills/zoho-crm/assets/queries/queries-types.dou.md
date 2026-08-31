@@ -24,7 +24,7 @@ REQUIRED_PARAMETERS:
 - Zoho CRM REST API type: `{ method: GET|POST|PUT|DELETE|PATCH, path: '/{api_version}/...', headers?, params?, body? }`.
 - REST API custom type: `{ method, endpoint, headers?, params?, body?, connection_link_name }`; base URL inherited from the Source.
 - SQL source create form: `{ Name, Host, User_Name, Password, Database_Name, Schema?, Port?, Advanced: { Use_SSL?, Time_Zone?, Connection_Timeout_seconds?, Read_Only? } }`.
-- See `queries-limits` for SELECT / INSERT / UPDATE / DELETE grammar caps that apply to SQL sources.
+- See [queries-limits.dou.md](./queries-limits.dou.md) for SELECT / INSERT / UPDATE / DELETE grammar caps that apply to SQL sources.
 
 UI_ONLY_ACTIONS:
 - Add a SQL source: `Setup → Developer Hub → Queries → Sources tab → Create Source → choose MySQL / MicrosoftSQL / PostgreSQL / Amazon RDS / Google Cloud Platform / Microsoft Azure → fill credentials + Advanced → Validate and Save`. Note: No API equivalent — UI-only.
@@ -37,7 +37,7 @@ CRITICAL_FAILURE_MODES:
 - Module type `Fields` populated by display label instead of API name in the Schema editor: Path entries break on locale change — keep Path keyed on API name. (label-vs-api-name)
 - Module type with more than 2 related modules selected: extra picks are ignored silently — cap is hard at 2.
 - COQL body addressing a module / field by display label (`"Last Name"`, `"Deal"`): `INVALID_QUERY` from the server — use API names (`Last_Name`, `Deals`). (label-vs-api-name)
-- COQL body uses `SELECT *`: rejected — must enumerate columns (see `queries-limits`).
+- COQL body uses `SELECT *`: rejected — must enumerate columns (see [queries-limits.dou.md](./queries-limits.dou.md)).
 - SQL source created with superuser credentials: every Developer-permissioned user in the org can author queries against that source — restrict the DB account to least privilege before saving.
 - SSL enabled while Host is an IP literal: connection encrypts but hostname is not verified, MITM detection is reduced — replace with DNS name and re-validate.
 - `Use SSL` flag set incorrectly on first save (off when it should be on, or on with a Trusted-Domains bypass that was not intended): **cannot be amended in place** — the source must be deleted and re-created; all dependent Queries re-point or rebuild.
@@ -48,7 +48,7 @@ CRITICAL_FAILURE_MODES:
 - REST API source's Connection's OAuth refresh-token expired: queries return 401 with no Workbench-side warning — admin re-authorizes under `Setup → Developer Hub → Connections`.
 - `Zoho CRM REST API` source used to fetch large record lists: documented as performance-suboptimal — switch to Module or COQL for record retrieval.
 - Source / Type changed mid-edit then Save: per-type configuration cleared — rebuild from scratch, do not assume retention.
-- COQL body authored with sub-queries: SQL-source caps apply (see `queries-limits`) — sub-queries are not supported anywhere.
+- COQL body authored with sub-queries: SQL-source caps apply (see [queries-limits.dou.md](./queries-limits.dou.md)) — sub-queries are not supported anywhere.
 - SQL source `Schema` field left blank for PostgreSQL: queries resolve against the role's `search_path` default — pin the schema name explicitly to avoid table-not-found surprises.
 - REST API source missing the host from Trusted Domains: every execution rejects with "host not trusted" — add the host once before saving the source.
 - Cloud-DB source with read-only privileges granted at the DB but `Read Only` flag left off in CRM: writes are blocked by the DB anyway, but error surfaces only after the Workbench attempts INSERT — set the `Read Only` flag in CRM to surface the constraint upstream.

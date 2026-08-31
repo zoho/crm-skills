@@ -1,20 +1,20 @@
-FILE_PURPOSE: Read when authoring a CRM Connection (Setup → Developer Hub → Connections) for invoking a third-party OAuth 2.0 API from Deluge Functions or Widget egress surfaces.
+FILE_PURPOSE: Read when authoring a CRM Connection (Setup → Developer Hub → Connections) for invoking a third-party OAuth 2.0 API from Deluge Functions, ClientScript, or Widget egress surfaces.
 SOURCE_DOC: https://www.zoho.com/crm/developer/docs/connectors/set-up.html
 TRIGGER_KEYWORDS: Connections, Developer Hub, Custom Service, OAuth 2.0, Client ID, Authorize URL, Access Token URL, Refresh Token URL, link name, invokeurl
 
 TECHNICAL_CONSTRAINTS:
 - Connections live at `Setup → Developer Hub → Connections` and split across two tabs — `Pick Your Service` (pre-built integrations published by Zoho) and `Custom Service` (BYO third-party OAuth 2.0 endpoint).
 - `Pick Your Service` entries ship with their OAuth client (`Client ID` / `Client Secret`) pre-registered by Zoho — the author supplies only a `Connection name` to instantiate one. `Custom Service` is the only path where the author must register an OAuth client at the third party and paste its `Client ID` / `Client Secret` into CRM.
-- A Connection abstracts the OAuth 2.0 authorization-code flow plus refresh-token rotation — callers reference the Connection by its **link name** at runtime (`connection:"<link_name>"` clause on `invokeurl`, or `CONNECTION.invoke("<link_name>", …)` from a Widget) and never handle tokens directly.
+- A Connection abstracts the OAuth 2.0 authorization-code flow plus refresh-token rotation — callers reference the Connection by its **link name** at runtime (`connection:"<link_name>"` clause on `invokeurl` from a Function, `ZDK.Apps.CRM.Connection.invoke("<link_name>", …)` from a ClientScript, `CONNECTION.invoke("<link_name>", …)` from a Widget (legacy JS SDK), or `zrc.*` with `{ connection: "<link_name>" }` from a ClientScript (org-level enablement required) or Widget (ZRC — preferred)) and never handle tokens directly.
 - Custom Service `Authentication type` field accepts the protocol family supported by the third-party; OAuth 2.0 is the documented path. The auth-code grant is the only flow exposed by the help page.
 - Custom Service requires nine inputs in this order: `Service name`, `Authentication type`, `Client ID`, `Client Secret`, `Request Token URL` (a.k.a. `Authorize URL`), `Access Token URL`, `Refresh Token URL`, `Connection name`, `Scopes`.
 - Three OAuth parameters are injected by CRM and must NOT be appended to the Authorize / Access / Refresh URLs by hand: `Redirect URL`, `Client ID`, `Response type`. Every other mandatory third-party parameter (`scope`, `state`, `access_type`, custom keys) is the developer's responsibility, encoded into the Authorize URL per the third-party's spec.
 - For Zoho-to-Zoho Custom Services, the Zoho-side OAuth client is registered at `https://accounts.zoho.com/developerconsole` with Redirect URI `https://deluge.zoho.com/delugeauth/callback` and Client Type `Web based`; non-Zoho services register at the third-party's own developer console with their own redirect URI list.
 - `Scopes` value is verbatim from the third-party documentation — CRM does not validate the scope string until the first authorization round-trip against the resource server.
 - The Connection's link name is generated from the user-supplied `Connection name` at the moment of `Create and Connect`; the link name is the only identifier accepted at runtime — the display name is not.
-- Connection HTTP egress executes server-side inside the CRM Function / Widget egress runtime — stored tokens never reach the browser, including the iframe of a Widget that invokes via `ZOHO.CRM.CONNECTION.invoke`.
+- Connection HTTP egress executes server-side inside the CRM Function / ClientScript / Widget egress runtime — stored tokens never reach the browser.
 - After `Create and Connect`, the Connection surfaces under `Pick Your Service` for re-use by other authors in the same org / DC.
-- Runtime invocation route owns its own keys: Deluge `invokeurl` parameter map uses `parameters` (Deluge syntax); the Widget bridge uses `param` (singular) on `req_data` — see `widgets-jssdk-egress` for the Widget-side contract.
+- Runtime invocation route owns its own keys: Deluge `invokeurl` uses `parameters` (Deluge syntax); the ClientScript and Widget bridge each use `param` (singular) on `req_data` — see [widgets-jssdk-egress.dou.md](../widgets/jssdk/widgets-jssdk-egress.dou.md) for the Widget-side contract.
 
 REQUIRED_PARAMETERS:
 - Custom Service lifecycle is **two-stage**:
@@ -23,7 +23,10 @@ REQUIRED_PARAMETERS:
 - Pre-built-service flow (single stage — Zoho-published services already have their OAuth client pre-registered): `Setup → Developer Hub → Connections → Pick Your Service → {service} → Connection name → Create and Connect`.
 - Post-`Create and Connect` envelope (read off the success page): `Link name`, `Service name`, `Status`, plus an auto-generated `invokeurl` snippet pre-filled with the `connection:"<link_name>"` clause — copy the link name from here, not from the display title.
 - Runtime invocation from a Function: `invokeurl [ url :"<absolute_url>" type :GET|POST|PUT|DELETE parameters :<map> headers :<map> connection :"<link_name>" ]`. The `parameters` map is the templating slot for substituting per-record / per-call dynamic values into the third-party URL or body.
-- Runtime invocation from a Widget: `ZOHO.CRM.CONNECTION.invoke("<link_name>", { url, method, param?, headers?, body? })` — see `widgets-jssdk-egress`.
+- Runtime invocation from a ClientScript (standard SDK): `ZDK.Apps.CRM.Connection.invoke("<link_name>", { url, method, param?, headers?, body? })` — same `req_data` shape as Widget `CONNECTION.invoke`; see [clientscript.md](../../references/clientscript.md) for the ZRC enablement note.
+- Runtime invocation from a ClientScript (ZRC — org-level enablement required): `zrc.get|post|...(path, body?, { connection: '<link_name>' })` or `zrc.createInstance({ baseUrl, connection: '<link_name>' })` — see [clientscript.md](../../references/clientscript.md).
+- Runtime invocation from a Widget (legacy JS SDK): `ZOHO.CRM.CONNECTION.invoke("<link_name>", { url, method, param?, headers?, body? })` — see [widgets-jssdk-egress.dou.md](../widgets/jssdk/widgets-jssdk-egress.dou.md).
+- Runtime invocation from a Widget (ZRC — preferred): `zrc.get|post|...(path, body?, { connection: '<link_name>' })` or `zrc.createInstance({ baseUrl, connection: '<link_name>' })` — see [widgets-zrc-reference.dou.md](../widgets/widgets-zrc-reference.dou.md).
 - Third-party-side prerequisite (Custom Service only): an OAuth 2.0 client registered at the resource server whose redirect URI list includes the CRM-side callback that the Authorize URL flow lands on (varies per service — read the third-party's OAuth setup doc before authoring).
 
 UI_ONLY_ACTIONS:

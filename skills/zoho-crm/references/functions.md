@@ -32,7 +32,7 @@ Before delivering the code, verify:
 - [ ] Namespace prefix matches function category (button., automation., schedule., etc.)
 - [ ] All field/module API names verified (not display labels)
 - [ ] Connection link names are actual, not placeholder names
-- [ ] No deprecated methods (check Deprecations section of SKILL.md)
+- [ ] No deprecated methods (check Deprecations section of [SKILL.md](../SKILL.md))
 - [ ] Verified against **Known Syntax Gotchas** preamble rules and 1–7 inline below
 - [ ] For `today()` gotcha: check [now-today.dou.md](../assets/functions/deluge/built-in-functions/date-time/now-today.dou.md)
 - [ ] For merge-variable trim gotcha: check [trim.dou.md](../assets/functions/deluge/built-in-functions/text/trim.dou.md)
@@ -76,9 +76,9 @@ A Workflow Function that calls `zoho.crm.v8.updateRecord` on the same record tha
 
 | Need | Method | Details |
 |------|--------|---------|
-| Fetch records by ID or paginated list | `zoho.crm.v8.getRecords` / `getRecordById` | DOU: `integrations/zoho-crm/get-records.dou.md` (getRecords) / `integrations/zoho-crm/get-record-by-id.dou.md` (getRecordById); `getRecordById` invalid ID → `{"status":"failure"}` with no `code` key |
+| Fetch records by ID or paginated list | `zoho.crm.v8.getRecords` / `getRecordById` | DOU: [get-records.dou.md](../assets/functions/deluge/integrations/zoho-crm/get-records.dou.md) (getRecords) / [get-record-by-id.dou.md](../assets/functions/deluge/integrations/zoho-crm/get-record-by-id.dou.md) (getRecordById); `getRecordById` invalid ID → `{"status":"failure"}` with no `code` key |
 | Search records by field criteria | `zoho.crm.v8.searchRecords` | Single: `(<field>:<op>:<val>)`; compound: `((<f>:<op>:<v>) and (<f>:<op>:<v>))`; operators: `equals`, `starts_with`, `not_equal`; `not_equal` omits null-field records; max 10 criteria |
-| Advanced queries (JOINs, aggregations, `>`, `<`, `between`) | COQL via `invokeurl` to `POST /crm/v8/coql` | DOU: `coql-execute.dou.md#deluge-usage` |
+| Advanced queries (JOINs, aggregations, `>`, `<`, `between`) | COQL via `invokeurl` to `POST /crm/v8/coql` | DOU: [coql-execute.dou.md](../assets/coql/coql-execute.dou.md#deluge-usage) |
 | Saved query bound to Canvas / Kiosk / Related List | `zoho.crm.invokeQuery(apiName, variableMap)` | See [queries.md](./queries.md) |
 | Sub-records (Tasks, Notes, Activities) for a parent | `zoho.crm.v8.getRelatedRecords` + filter in Deluge | `Who_Id` cannot be filtered in COQL WHERE — use two-step pattern |
 

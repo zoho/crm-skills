@@ -39,9 +39,9 @@ UI_ONLY_ACTIONS:
 CRITICAL_FAILURE_MODES:
 - `fetch(...)` to a domain not present in Trusted Domains is blocked at request time; the promise rejects and `distance.setValue` never runs. (trusted-domain)
 - Lookup `setValue({"id": "…", "name": "…"})` IDs are per-org — copying the sample IDs `4967860000001049208` / `4967860000001049217` into another org sets an invalid lookup.
-- Sample A's `fetch` call returns immediately; the `.then(...).then(...)` chain runs after the Client Script handler returns — long-latency APIs risk exceeding the 10 s execution budget (see `clientscript-best-practices` for the loader pattern).
+- Sample A's `fetch` call returns immediately; the `.then(...).then(...)` chain runs after the Client Script handler returns — long-latency APIs risk exceeding the 10 s execution budget (see [clientscript-best-practices.dou.md](./clientscript-best-practices.dou.md) for the loader pattern).
 - `Product` and `Category` are Lookup fields — `value` inside `onChange` is a `{ id, name }` object, not a string; using `value === 'Airbag sensor'` silently fails.
 - The `quantityCheck` static resource references `quantity_field` without defining it — the calling script must define `quantity_field = ZDK.Page.getField("Quantity_of_Products")` in the enclosing scope, else `showError` throws.
-- Two scripts (Field `onChange` and Page `onSave`) sharing the same validator double-fire on Save — by design, but be aware of order via Reorder (see `clientscript-best-practices`).
+- Two scripts (Field `onChange` and Page `onSave`) sharing the same validator double-fire on Save — by design, but be aware of order via Reorder (see [clientscript-best-practices.dou.md](./clientscript-best-practices.dou.md)).
 - `setReadOnly(true)` enforced in the script does not survive a layout change — opening the record under a non-bound layout leaves Distance / Request_Name editable. (layout-binding)
 - Field API names quoted in samples must exist verbatim in the target `Request` module before activation; renames silently no-op `getField`. (label-vs-api-name)

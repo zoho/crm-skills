@@ -88,7 +88,7 @@ REQUIRED_PARAMETERS:
 
 UI_ONLY_ACTIONS:
 - Create/edit Widget definition: `Setup → Developer Hub → Widgets → New Widget`. Note: No API to create or edit Widget definitions — UI-only.
-- Associate Widget with placement: Dashboard, Custom Button, Related List, Web Tab, Blueprint, Signal, Settings, Wizard — see `widgets-usage.dou.md` for full association paths. Note: No API for placement association — UI-only.
+- Associate Widget with placement: Dashboard, Custom Button, Related List, Web Tab, Blueprint, Signal, Settings, Wizard — see [widgets-usage.dou.md](./widgets-usage.dou.md) for full association paths. Note: No API for placement association — UI-only.
 
 CRITICAL_FAILURE_MODES:
 - Manually created project (via `mkdir` or file-creation tools) — missing TLS certs (`cert.pem`/`key.pem`), correct `server/index.js`, `package-lock.json`; `zet run` and `zet pack` fail silently or with confusing errors.

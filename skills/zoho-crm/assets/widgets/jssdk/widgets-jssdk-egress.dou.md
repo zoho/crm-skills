@@ -13,7 +13,7 @@ TECHNICAL_CONSTRAINTS:
 - All three return Promises resolved with the external service's response payload; rejection contract not specified in source — wrap each in try / catch.
 - Connection link name (`conn_name`) is the admin-defined identifier from Setup — display name of the connection is **not** accepted.
 - Connector `nameSpace` is the developer-defined namespace from the connector definition, not the display label.
-- See sibling `widgets-zrc-reference` for a unified browser-side egress path (`zrc.*`) that consolidates these three surfaces and adds file-upload + 100 MB connection response support.
+- See sibling [widgets-zrc-reference.dou.md](../widgets-zrc-reference.dou.md) for a unified browser-side egress path (`zrc.*`) that consolidates these three surfaces and adds file-upload + 100 MB connection response support.
 
 REQUIRED_PARAMETERS:
 - `HTTP.get({ url, headers?, params? })`; `HTTP.post|put|patch({ url, headers?, body? })`; `HTTP.delete({ url, headers? })`.
@@ -31,10 +31,10 @@ CRITICAL_FAILURE_MODES:
 - `CONNECTION.invoke` `req_data.url` left relative when the connection has no base URL configured: request silently misroutes / 404s — always pass absolute URL.
 - `CONNECTOR.invokeAPI` called before `CONNECTOR.authorize` for the current user: returns `AUTHORIZATION_FAILED` — gate `invokeAPI` behind a successful `authorize`.
 - `HTTP.*` blocked by the external service's CORS policy: iframe request rejected by the browser — no SDK error, only a browser-console CORS line. Use `CONNECTION.invoke` to route through CRM-server-side egress.
-- POST / PUT body passed as a string to `HTTP.*`: SDK does not auto-serialize — set `Content-Type: application/json` and stringify, or use `zrc.*` which auto-serializes (see `widgets-zrc-reference`).
+- POST / PUT body passed as a string to `HTTP.*`: SDK does not auto-serialize — set `Content-Type: application/json` and stringify, or use `zrc.*` which auto-serializes (see [widgets-zrc-reference.dou.md](../widgets-zrc-reference.dou.md)).
 - `param` (CONNECTION / CONNECTOR) vs `params` (HTTP) key mismatch: query string silently empty — match each method's exact key.
 - Connector `nameSpace` typo: SDK error obscure — list installed connectors in Setup → Marketplace before authoring.
-- File-upload payloads against `CONNECTION.invoke`: source documents text/JSON bodies only — for file upload through a connection use `zrc.post` with `FormData` (see `widgets-zrc-reference`).
+- File-upload payloads against `CONNECTION.invoke`: source documents text/JSON bodies only — for file upload through a connection use `zrc.post` with `FormData` (see [widgets-zrc-reference.dou.md](../widgets-zrc-reference.dou.md)).
 - `HTTP.*` response size assumed to be small: no documented response cap — large payloads can exceed the iframe memory budget; stream / page where possible.
 - `CONNECTION.invoke` against a connection whose stored OAuth refresh-token expired: returns auth error — admin must re-authorize the connection in Setup → Developer Hub → Connections.
 - Mixing two egress paths against the same external service across the codebase: token-refresh state diverges (HTTP path holds its own header, CONNECTION path holds the CRM-stored token) — pick one mechanism per service.

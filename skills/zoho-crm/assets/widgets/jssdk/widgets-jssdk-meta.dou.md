@@ -27,7 +27,7 @@ UI_ONLY_ACTIONS:
 CRITICAL_FAILURE_MODES:
 - `config.Entity` populated with the module display label (`"Contact"`, `"Lead"`) instead of the SysRefName / API name (`Contacts`, `Leads`): returns `INVALID_MODULE` or empty — `label-vs-api-name`.
 - `getFields` consumer keys downstream record writes by `field_label` instead of `api_name`: write succeeds with the field unset — always index on `api_name`.
-- `getLayouts` invoked without `LayoutId` when caller needs the active layout for the current record: response lists all layouts — cross-reference the record's `Layout.id` via `widgets-jssdk-api` `getRecord` first.
+- `getLayouts` invoked without `LayoutId` when caller needs the active layout for the current record: response lists all layouts — cross-reference the record's `Layout.id` via [widgets-jssdk-api.dou.md](./widgets-jssdk-api.dou.md) `getRecord` first.
 - `getRelatedList` `href` template used verbatim: `{ENTITYID}` is a literal placeholder requiring substitution — replace before navigating.
 - `getCustomViews` `Id` populated with the view display name instead of the numeric view ID: returns empty / error — `label-vs-api-name`.
 - Cached `getModules` / `getFields` result reused after the org admin edited a layout or field: stale field list keys writes against removed fields — re-fetch on every Widget mount or invalidate on `ContextUpdate`.

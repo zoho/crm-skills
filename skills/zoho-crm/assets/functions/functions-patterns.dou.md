@@ -10,7 +10,7 @@ Six recurring patterns cover the most common Deluge use cases. Each pattern is s
 
 ## WHEN_NOT_TO_USE
 - Looking up individual `zoho.crm.v8.*` method signatures — use `integrations/zoho-crm/*.dou.md` instead.
-- Looking up `invokeurl` syntax — use `integrations/invokeurl-task.dou.md` instead.
+- Looking up `invokeurl` syntax — use [invokeurl-task.dou.md](./deluge/integrations/invokeurl-task.dou.md) instead.
 
 ## TRIGGER_KEYWORDS
 read-then-write, guard-clause, loop-update, bulk-create-pattern, two-step-retrieval, polymorphic-activity, Who_Id, external-api-store
@@ -138,7 +138,7 @@ for each contact in contactList
 }
 ```
 
-> **v2 vs v8 note for Pattern 6**: `zoho.crm.getRelatedRecords` (v2, 5 params) is shown above for existing code compatibility. For new code, prefer `zoho.crm.v8.getRelatedRecords(relation_name, parent_module, parent_id, query_data, page, per_page, connection)` (v8, 7 params with `query_data` map requiring `"fields"` key). See `integrations/zoho-crm/get-related-records.dou.md`.
+> **v2 vs v8 note for Pattern 6**: `zoho.crm.getRelatedRecords` (v2, 5 params) is shown above for existing code compatibility. For new code, prefer `zoho.crm.v8.getRelatedRecords(relation_name, parent_module, parent_id, query_data, page, per_page, connection)` (v8, 7 params with `query_data` map requiring `"fields"` key). See [get-related-records.dou.md](./deluge/integrations/zoho-crm/get-related-records.dou.md).
 
 ## FAILURE_MODES
 - Pattern 6: `Who_Id` is a polymorphic Multi-Module Lookup — cannot be filtered in COQL WHERE (neither `->` traversal nor `IN` subquery supported for this field). Use the two-step approach.
@@ -147,10 +147,10 @@ for each contact in contactList
 - Pattern 2: `company_data.get("name")` on a failed `invokeurl` response returns `null` — check `response` is not null and does not contain an error key before accessing nested fields.
 
 ## RELATED_DOCS
-- Function category boilerplate → `assets/functions/functions-categories.dou.md`
-- getRelatedRecords v8 → `assets/functions/deluge/integrations/zoho-crm/get-related-records.dou.md`
-- invokeurl task → `assets/functions/deluge/integrations/invokeurl-task.dou.md`
-- bulkCreate → `assets/functions/deluge/integrations/zoho-crm/bulk-create-records.dou.md`
+- Function category boilerplate → [functions-categories.dou.md](./functions-categories.dou.md)
+- getRelatedRecords v8 → [get-related-records.dou.md](./deluge/integrations/zoho-crm/get-related-records.dou.md)
+- invokeurl task → [invokeurl-task.dou.md](./deluge/integrations/invokeurl-task.dou.md)
+- bulkCreate → [bulk-create-records.dou.md](./deluge/integrations/zoho-crm/bulk-create-records.dou.md)
 
 ## SOURCE
 https://www.zoho.com/crm/developer/docs/functions/guides.html

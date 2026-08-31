@@ -4,7 +4,7 @@ TRIGGER_KEYWORDS: ZOHO.embeddedApp, ZOHO.embeddedApp.on, ZOHO.embeddedApp.init, 
 
 TECHNICAL_CONSTRAINTS:
 - JS-SDK version pinned at v1.5 — load `https://live.zwidgets.com/js-sdk/1.5/ZohoEmbededAppSDK.min.js` inside `app/widget.html` before any `ZOHO.embeddedApp.*` call.
-- Bootstrap script lives in `app/widget.html`; CLI lifecycle is owned by `widgets-zet-cli`; runtime sandbox + SDK surfaces are owned by `widgets-overview`.
+- Bootstrap script lives in `app/widget.html`; CLI lifecycle is owned by [widgets-zet-cli.dou.md](../widgets-zet-cli.dou.md); runtime sandbox + SDK surfaces are owned by [widgets-overview.dou.md](../widgets-overview.dou.md).
 - Single global `ZOHO.embeddedApp.init()` boots the listener registry — call exactly once per Widget bootstrap; activates listeners already registered.
 - Six listener events registered via `ZOHO.embeddedApp.on(...)`: `DialerActive`, `Dial`, `Notify`, `NotifyAndWait`, `PageLoad`, `ContextUpdate`. `init` is the bootstrap method, not a listenable event — registering `on("init", ...)` no-ops.
 - `PageLoad` is the canonical entity-context event; payload exposes API-named context — for example `{ "Entity": "Leads", "EntityId": "3000000032096" }` on record / related-list surfaces. Non-record locations (Web Tab, Settings, Dashboard) ship reduced payload that can omit `EntityId`.
@@ -18,7 +18,7 @@ TECHNICAL_CONSTRAINTS:
 - Optional `.js` companions and stylesheets live alongside `widget.html` under `app/`; the entry HTML controls which assets the iframe loads.
 
 REQUIRED_PARAMETERS:
-- Authoring artefact — `app/widget.html`; CRM data calls routed through the JS SDK (see `widgets-jssdk-api`).
+- Authoring artefact — `app/widget.html`; CRM data calls routed through the JS SDK (see [widgets-jssdk-api.dou.md](./widgets-jssdk-api.dou.md)).
 - Listener signature: `ZOHO.embeddedApp.on(eventName: string, callback: (data: any) => void): void`.
 - Bootstrap signature: `ZOHO.embeddedApp.init(): void` — no arguments.
 - Bootstrap contract (mandatory order — listener BEFORE init):
@@ -28,11 +28,11 @@ REQUIRED_PARAMETERS:
   });
   ZOHO.embeddedApp.init();
   ```
-- `NotifyAndWait` callback `data.id` is a UUID and is the first argument of `ZDK.Client.sendResponse(id, payload)` (see `widgets-jssdk-client`).
+- `NotifyAndWait` callback `data.id` is a UUID and is the first argument of `ZDK.Client.sendResponse(id, payload)` (see [widgets-jssdk-client.dou.md](./widgets-jssdk-client.dou.md)).
 - Sample / reference Widgets — `zohocrm.dev/explore/widgets/codesamples`.
 
 UI_ONLY_ACTIONS:
-- In-context testing requires associating the saved Widget with a host component — see `widgets-usage` for the full association flow. Note: No API equivalent.
+- In-context testing requires associating the saved Widget with a host component — see [widgets-usage.dou.md](../widgets-usage.dou.md) for the full association flow. Note: No API equivalent.
 
 CRITICAL_FAILURE_MODES:
 - Listener registered AFTER `ZOHO.embeddedApp.init()` never fires — no console warning, no `PageLoad` callback. Register every `on()` before the single `init()` call. (listener-order)

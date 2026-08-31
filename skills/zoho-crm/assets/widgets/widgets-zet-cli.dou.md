@@ -21,13 +21,13 @@ REQUIRED_PARAMETERS:
 - Install — `npm install -g zoho-extension-toolkit`.
 - Scaffold — `zet init` → select Zoho CRM service → project name → `cd {Project_name}`.
 - Serve — `zet run`; verify at `http://127.0.0.1:5000/app/widget.html`.
-- In-CRM dev-loop testing (per `widgets/create-widget.md`) — register a Widget with **External Hosting** in the sandbox (or production) account and set its Base URL to the `zet run` URL (`http://127.0.0.1:5000/app/widget.html`); the host machine renders the live local bundle inside CRM without re-packing on every edit. Only the developer's own browser can reach the local URL; switch back to Internal Hosting + `zet pack` before shipping to teammates.
+- In-CRM dev-loop testing — register a Widget with **External Hosting** in the sandbox (or production) account and set its Base URL to the `zet run` URL (`http://127.0.0.1:5000/app/widget.html`); the host machine renders the live local bundle inside CRM without re-packing on every edit. Only the developer's own browser can reach the local URL; switch back to Internal Hosting + `zet pack` before shipping to teammates.
 - Validate — `zet validate`; resolve every violation before packing.
-- Pack — `zet pack`; emits `<project>/dist/<project>.zip`, the only accepted artefact for Internal-hosting upload (see `widgets-usage`).
+- Pack — `zet pack`; emits `<project>/dist/<project>.zip`, the only accepted artefact for Internal-hosting upload (see [widgets-usage.dou.md](./widgets-usage.dou.md)).
 
 UI_ONLY_ACTIONS:
 - Install Node.js on the host before `npm install -g zoho-extension-toolkit`. Note: No API equivalent — host-machine setup.
-- Upload the `dist/<project>.zip` to CRM — see `widgets-usage` for the full `Setup → Developer Hub → Widgets` Internal-hosting flow.
+- Upload the `dist/<project>.zip` to CRM — see [widgets-usage.dou.md](./widgets-usage.dou.md) for the full `Setup → Developer Hub → Widgets` Internal-hosting flow.
 
 CRITICAL_FAILURE_MODES:
 - Port 5000 occupied: `zet run` bind fails. Do NOT kill the existing process. Instead, open `server/index.js` in the project folder, change `var port = 5000;` to any free port (e.g. `var port = 3000;`), then re-run `zet run`. The widget will be served on the new port.
@@ -36,7 +36,7 @@ CRITICAL_FAILURE_MODES:
 - Toolkit installed without `-g`: `zet` not on `PATH` — reinstall with `-g` or invoke via `npx zoho-extension-toolkit`.
 - Node.js major-version upgrade without reinstall: native binding mismatch — rerun `npm install -g zoho-extension-toolkit`.
 - `plugin-manifest.json` and `app/widget.html` edited out of lockstep: `zet validate` fails.
-- Local-serve URL configured as a production External-hosting Base URL: only the host machine can reach it — every other user sees a blank Widget. (See `widgets-usage` for the HTTPS hosting contract.)
+- Local-serve URL configured as a production External-hosting Base URL: only the host machine can reach it — every other user sees a blank Widget. (See [widgets-usage.dou.md](./widgets-usage.dou.md) for the HTTPS hosting contract.)
 - `dist/` committed to source control: stale `.zip` shipped to teammates — treat as build output only.
 - `zet pack` run without saving recent edits to `app/widget.html`: the archive ships the previous on-disk version — save all files before packing.
 - Validation passed on developer machine but upload fails in another environment: confirm the same toolkit version with `zet --version` before triage.

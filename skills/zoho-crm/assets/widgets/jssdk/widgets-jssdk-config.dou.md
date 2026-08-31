@@ -25,9 +25,9 @@ CRITICAL_FAILURE_MODES:
 - Consumer accesses the response as `data.user` / `data.org` instead of `data.users[0]` / `data.org[0]`: returns `undefined` silently — always destructure the array form.
 - Caching `getCurrentUser()` across Widget reloads when admin changed role / profile: stale role gate exposes UI the user should no longer see — refresh on each mount.
 - `time_zone` from `getOrgInfo()` applied to a per-user datetime calculation: misaligned with user's local timezone — prefer the user-level timezone when handling user-scoped display.
-- `currency_symbol` from `getOrgInfo()` applied to a multi-currency record whose `Currency` field differs from org default: displays wrong symbol — read the record's `Currency` field via `widgets-jssdk-api` instead.
+- `currency_symbol` from `getOrgInfo()` applied to a multi-currency record whose `Currency` field differs from org default: displays wrong symbol — read the record's `Currency` field via [widgets-jssdk-api.dou.md](./widgets-jssdk-api.dou.md) instead.
 - `getCurrentUser()` invoked from a Widget hosted on a Settings location where no end-user context exists: response is the active admin's identity, not the record-owner — never use it as record-owner proxy.
-- `language` / `locale` value from `getCurrentUser()` used to key cached field-label maps: labels change per locale; index on field API name from `widgets-jssdk-meta` instead.
+- `language` / `locale` value from `getCurrentUser()` used to key cached field-label maps: labels change per locale; index on field API name from [widgets-jssdk-meta.dou.md](./widgets-jssdk-meta.dou.md) instead.
 - `personal_account: false` interpreted as "is admin": flag indicates personal-account mode, not role privileges — gate on `role.name` / profile instead.
 - `getUserPreference()` consumer assumes a fixed payload shape and accesses a key not returned for that user (e.g. user never set a date format): undefined access — coalesce with sensible defaults.
 - `license_details` parsed without null-checking: trial / suspended orgs return null sub-keys — defensive read.

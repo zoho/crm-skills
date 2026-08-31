@@ -9,8 +9,8 @@ TECHNICAL_CONSTRAINTS:
 - `WIZARD.post` returns a Promise that resolves when the field values are committed to the parent Wizard's record buffer; the resolved value carries no payload — await it for write-acknowledgement, not for data.
 - `WIZARD.post` `record_data` keys must be field **API names** (e.g. `Last_Name`, not `Last Name`); values are scalar / array per field type.
 - Blueprint surface respects the host record's currently active Blueprint state — `transition_id` must be valid for the record's current state, otherwise the call rejects.
-- Wizard surface is only meaningful when the Widget is hosted as a Wizard Widget step (parent-skill Routing Table → `widgets-usage`); calling it from other locations is a no-op.
-- See sibling `widgets-jssdk-events` `ContextUpdate` event — that event signals the Wizard form changed; `WIZARD.post` is the inverse write path.
+- Wizard surface is only meaningful when the Widget is hosted as a Wizard Widget step (parent-skill Routing Table → [widgets-usage.dou.md](../widgets-usage.dou.md)); calling it from other locations is a no-op.
+- See sibling [widgets-jssdk-events.dou.md](./widgets-jssdk-events.dou.md) `ContextUpdate` event — that event signals the Wizard form changed; `WIZARD.post` is the inverse write path.
 
 REQUIRED_PARAMETERS:
 - `BLUEPRINT.proceed({ Entity, RecordID, blueprint_transition: { transition_id, data?: Record<string, any> } })`.
@@ -22,10 +22,10 @@ UI_ONLY_ACTIONS:
 
 CRITICAL_FAILURE_MODES:
 - `BLUEPRINT.proceed` `Entity` is module display label (`"Lead"`) instead of API name (`Leads`): API rejects with `INVALID_MODULE` — `label-vs-api-name`.
-- `transition_id` value hardcoded against a Blueprint that admins re-versioned: IDs change per Blueprint version — fetch via `widgets-jssdk-api` `getBluePrint` at runtime instead.
+- `transition_id` value hardcoded against a Blueprint that admins re-versioned: IDs change per Blueprint version — fetch via [widgets-jssdk-api.dou.md](./widgets-jssdk-api.dou.md) `getBluePrint` at runtime instead.
 - `blueprint_transition.data` keys use field display labels: transition succeeds but the data fields remain unset — `label-vs-api-name`.
 - `WIZARD.post` called from a Widget not hosted on a Wizard step: no-op, no error — feature-detect by checking the Widget's host context via `PageLoad`.
-- `WIZARD.post` payload keys mix camelCase / snake_case inconsistently against the module's field API names: mismatched keys silently dropped — match each field's exact API name from `widgets-jssdk-meta` `getFields`.
+- `WIZARD.post` payload keys mix camelCase / snake_case inconsistently against the module's field API names: mismatched keys silently dropped — match each field's exact API name from [widgets-jssdk-meta.dou.md](./widgets-jssdk-meta.dou.md) `getFields`.
 - Multiple `WIZARD.post` calls fired rapidly from a `ContextUpdate` handler: race condition on the wizard buffer can drop intermediate writes — debounce.
 - `BLUEPRINT.proceed` invoked while the record's current state has unresolved mandatory transition fields: rejects with `MANDATORY_NOT_FOUND` — pre-validate against Blueprint metadata.
 - `BLUEPRINT.proceed` invoked in a tight retry loop after rejection: each call consumes Blueprint audit history — backoff exponentially on failure.
@@ -41,7 +41,7 @@ CRITICAL_FAILURE_MODES:
 - `blueprint_transition.data` containing a subform / multiselect field as a comma-string instead of an array: server rejects — use array shape.
 - `WIZARD.post` caller proceeds with a follow-up read before the returned Promise resolves: the wizard buffer write is not yet visible — always `await WIZARD.post(...)` before consuming the buffer state.
 - `BLUEPRINT.proceed` invoked against a record whose Blueprint was paused by admins: returns blueprint-inactive error — check Blueprint status before retry.
-- Caching the result of `widgets-jssdk-api` `getBluePrint` across versions: admin re-publish invalidates `transition_id` values — re-fetch on every Widget mount.
+- Caching the result of [widgets-jssdk-api.dou.md](./widgets-jssdk-api.dou.md) `getBluePrint` across versions: admin re-publish invalidates `transition_id` values — re-fetch on every Widget mount.
 - `WIZARD.post` to a field that is not present in the Wizard's step layout: silently dropped — verify field presence against the active step.
 - Triggering `BLUEPRINT.proceed` from a `ContextUpdate` event: every keystroke advances Blueprint state — only call it on explicit user submit.
 - Transition `data` payload includes audit-only fields the Blueprint marks read-only: server rejects — supply only transition-input fields.

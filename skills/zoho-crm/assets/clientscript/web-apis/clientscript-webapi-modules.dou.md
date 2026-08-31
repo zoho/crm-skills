@@ -126,9 +126,9 @@ CRITICAL_FAILURE_MODES:
 - `searchByEmail` / `searchByPhone` / `searchByWord` on records where the searched field is null → records skipped silently; no warning.
 - `fetch()` consumer not iterating `page` until response is empty → silently truncated at default page (1, server-side `per_page` cap). Source does not state the cap.
 - `convert(convertLead, id)` invoked against a Lead already converted → API returns conversion-not-allowed error; pre-check `Converted` state.
-- `delinkRelatedRecords` / `updateRelatedRecords` with `related_list_api_name` mismatch (`"Deals"` vs module-specific `"Potentials"`) → silently no-ops; resolve the related-list API name via `clientscript-webapi-settings` `fetchRelatedLists`.
+- `delinkRelatedRecords` / `updateRelatedRecords` with `related_list_api_name` mismatch (`"Deals"` vs module-specific `"Potentials"`) → silently no-ops; resolve the related-list API name via [clientscript-webapi-settings.dou.md](./clientscript-webapi-settings.dou.md) `fetchRelatedLists`.
 - `sendMail` without `mail_format` → API rejects; without `from`/`to` entries → rejects with malformed-mail payload.
-- `approveRecord` called on a record not in an approval queue for the script's invoker user → returns approval-not-pending error; pre-check via `clientscript-webapi-settings` `fetchApprovalProcess`.
+- `approveRecord` called on a record not in an approval queue for the script's invoker user → returns approval-not-pending error; pre-check via [clientscript-webapi-settings.dou.md](./clientscript-webapi-settings.dou.md) `fetchApprovalProcess`.
 - `getFeatureInfo` invoked with > 100 record ids or > 5 features → source declares hard cap; exceeding it returns request-too-large error.
 - Source does not surface a `trigger` map / automation-suppression knob — every `create` / `update` / `upsert` / `delete` / `convert` here fires the full workflow / blueprint / approval / scoring / orchestration stack; this surface cannot suppress automation — `automation-interaction`.
 - Source does not enumerate error codes; surface failures by inspecting the returned `CRMResponses` `status` / `code` / `message` and the linked `Reference API` doc for each method.

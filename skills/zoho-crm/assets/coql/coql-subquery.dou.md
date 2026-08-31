@@ -9,7 +9,7 @@ TECHNICAL_CONSTRAINTS:
 - A subquery returns **at most 100 rows**, with two distinct overflow behaviours by composition:
   - Subquery **without** an explicit LIMIT and underlying selection > 100 rows: silently truncated to the first 100 (per source's Subquery-vs-JOIN scenario where 400 matching accounts → only the first 100 are used → only 350 contact rows returned). No error raised.
   - Subquery **with** an explicit LIMIT > 100: `LIMIT_EXCEEDED` 400 ("The subquery retrieves more records than the allowed limit") per source error catalog.
-  - For > 100 matching rows in either case, switch to a JOIN (see `coql-joins.dou.md`).
+  - For > 100 matching rows in either case, switch to a JOIN (see [coql-joins.dou.md](./coql-joins.dou.md)).
 - Each subquery's SELECT column count is exactly 1 — multi-column subqueries are rejected with `INVALID_QUERY` 400.
 - Supported subquery operators split into two groups:
   - **Multi-value operators**: `IN`, `NOT IN` — accept the full subquery result set as operands.
@@ -22,7 +22,7 @@ TECHNICAL_CONSTRAINTS:
 - Choice between subquery and JOIN for matching-row counts > 100: source explicitly recommends JOIN over subquery (subquery hits the 100-row cap and silently drops the remainder).
 - A subquery references a lookup target module **once per WHERE clause** (e.g. `Account_Name in (select id from Accounts where ...)`) — replacing repeated dotted-traversals in the WHERE.
 - A subquery's `LIMIT` clause is optional; when omitted, the 100-row cap still applies (the cap is implicit, not driven by LIMIT).
-- Subquery WHERE clauses follow the same per-field-type comparator matrix as the outer query (see `coql-execute.dou.md`).
+- Subquery WHERE clauses follow the same per-field-type comparator matrix as the outer query (see [coql-execute.dou.md](./coql-execute.dou.md)).
 - A subquery's `SELECT` field must be a real field on the inner module — alias names from the outer query are out of scope inside the subquery.
 
 REQUIRED_PARAMETERS:
@@ -51,4 +51,4 @@ CRITICAL_FAILURE_MODES:
 - Subquery returns zero rows under single-value `=` / `!=`: outer comparison resolves to false for every row → empty result set — branch on the inner subquery's expected cardinality before composing.
 - Author uses BETWEEN's two-subquery form to express "between the first and last record" without sort-stable ORDER BY in the inner subqueries: row order is by `id` ASC default — supply explicit `ORDER BY` inside each operand subquery when the bounds depend on a custom axis.
 - Nested-subquery dependency chain longer than two levels: source documents two-level dependency examples — deeper chains' execution order is undefined per source silence.
-- `IN` subquery operand list exceeds 100 distinct values after expansion: hits the `in` / `not in` 100-value cap (see `coql-execute.dou.md`) — chunk values across multiple queries.
+- `IN` subquery operand list exceeds 100 distinct values after expansion: hits the `in` / `not in` 100-value cap (see [coql-execute.dou.md](./coql-execute.dou.md)) — chunk values across multiple queries.

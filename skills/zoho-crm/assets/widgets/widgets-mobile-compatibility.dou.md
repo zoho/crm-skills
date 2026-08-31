@@ -6,13 +6,13 @@ TECHNICAL_CONSTRAINTS:
 - Mobile Compatibility is a per-Widget-definition toggle at the bottom of the Widget create / edit pop-up; off by default.
 - Supported Widget types (5 only): Related List, Web tab, Button, Blueprint, Wizard. Dashboard / Signal / Settings do not expose the toggle and render desktop-only.
 - Toggle flips a CRM-side flag only — bundle assets are unchanged; the developer is responsible for mobile-fit CSS / viewport / touch-target work.
-- Mobile rendering reuses the same iframe + JS SDK runtime as desktop — `ZOHO.embeddedApp.*` and `ZOHO.CRM.*` surfaces remain available (see `widgets-jssdk-events`).
+- Mobile rendering reuses the same iframe + JS SDK runtime as desktop — `ZOHO.embeddedApp.*` and `ZOHO.CRM.*` surfaces remain available (see [widgets-jssdk-events.dou.md](./jssdk/widgets-jssdk-events.dou.md)).
 - Extension-based Widgets are excluded from mobile-compat support even when their Widget Type is in the supported list.
 - Decision is per-Widget-definition — a single definition cannot be marked compatible for one host component and incompatible for another; split into two Widgets when divergent mobile UX is needed.
 - Flag is read at Widget-association time — flipping later requires re-saving every existing association to take effect.
 - Mobile-incompatible Widgets are marked with an icon in the component's Widget association popup.
-- Hosting mode (Internal `.zip` / External URL) is shared with desktop — there is no separate mobile artefact (see `widgets-usage`).
-- Edition cap, profile gating, and sandbox-scoping are inherited from `widgets-overview`.
+- Hosting mode (Internal `.zip` / External URL) is shared with desktop — there is no separate mobile artefact (see [widgets-usage.dou.md](./widgets-usage.dou.md)).
+- Edition cap, profile gating, and sandbox-scoping are inherited from [widgets-overview.dou.md](./widgets-overview.dou.md).
 - Toggle state is preserved across Widget edits as long as Widget Type stays in the supported set; changing type to Dashboard / Signal / Settings clears the toggle silently.
 - Mobile-compat decision affects only whether the Widget is offered for selection in the mobile app association picker; once offered, rendering quality is bounded by the Widget developer's CSS.
 
@@ -33,7 +33,7 @@ CRITICAL_FAILURE_MODES:
 - Toggle flipped via Edit but existing associations not re-saved: mobile rendering remains disabled until each association is re-saved.
 - Bundle re-upload skipped after viewport / CSS fixes: end-users still see the pre-fix bundle — re-upload `.zip` (Internal) or redeploy URL (External).
 - Runtime branching driven by user-agent sniffing instead of `PageLoad` payload + viewport queries: unreliable inside CRM mobile WebViews.
-- Display labels referenced inside mobile-only code branches (e.g. layout name string compares): same `label-vs-api-name` hazard as desktop (see `widgets-jssdk-events`).
+- Display labels referenced inside mobile-only code branches (e.g. layout name string compares): same `label-vs-api-name` hazard as desktop (see [widgets-jssdk-events.dou.md](./jssdk/widgets-jssdk-events.dou.md)).
 - Desktop-only browser APIs (drag-and-drop file pickers, hover-only menus) used inside a mobile-compat Widget: renders without function on touch devices — feature-detect at runtime.
 - Bundle size acceptable on desktop but stalling on mobile networks: profile and trim — the toggle does not implicitly optimize transport.
 - Widget Type changed from a supported value to Dashboard / Signal / Settings: mobile-compat flag is cleared silently — audit after type changes.

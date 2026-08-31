@@ -23,4 +23,4 @@ CRITICAL_FAILURE_MODES:
 - `debugger;` with DevTools closed = no-op — relying on it in a production debug pass without instructing the operator to open DevTools yields zero visibility.
 - `log(...)` calls do not surface anywhere outside the IDE Run → Messages panel — they are invisible to end-users and provide no production telemetry.
 - Source-map view diverges from the saved Client Script body when Source Maps is disabled in DevTools — debugger pauses on the transformed source and variable names do not align.
-- The page documents only `log` and `debugger`; profile / layout / Developer-Permissions silent no-fire modes are not covered here (see `clientscript-overview`).
+- The page documents only `log` and `debugger`; profile / layout / Developer-Permissions silent no-fire modes are not covered here (see [clientscript-overview.dou.md](./clientscript-overview.dou.md)).

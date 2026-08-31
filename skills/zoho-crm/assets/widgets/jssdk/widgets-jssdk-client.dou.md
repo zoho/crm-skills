@@ -12,7 +12,7 @@ TECHNICAL_CONSTRAINTS:
 - Supported markdown across alert / message / confirmation: italics `_x_`, bold `*x*`, underline `__x__`, strikeout `~x~`, code, headings `# / ###`, blockquote `!x`, hyperlink, image (alerts only).
 - `openPopup` resolves with whatever `$Client.close(response)` passes back — type is any of: object, string, number, boolean.
 - `$Client.close(response)` is only valid inside a Widget that was launched via `openPopup` or as a Flyout — calling it elsewhere is a no-op.
-- `sendResponse(uuid, data)` is paired one-to-one with a `NotifyAndWait` event; the `uuid` is `data.id` from that event payload (see `widgets-jssdk-events`).
+- `sendResponse(uuid, data)` is paired one-to-one with a `NotifyAndWait` event; the `uuid` is `data.id` from that event payload (see [widgets-jssdk-events.dou.md](./widgets-jssdk-events.dou.md)).
 
 REQUIRED_PARAMETERS:
 - `getInput(options[], heading?, accept_message?='Okay', reject_message?='Cancel')`; each `options[i]` needs `{ type, label?, default_value?, list_options? }`.

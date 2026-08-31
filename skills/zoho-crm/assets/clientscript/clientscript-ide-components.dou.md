@@ -7,7 +7,7 @@ TECHNICAL_CONSTRAINTS:
 - Single-line comment syntax `//`; block comment syntax `/* ... */`.
 - On Save, if the editor finds an error, an error panel listing the errors pops up at the bottom; the error icon on the status bar (bottom-right) reopens the panel.
 - Information section (right pane) shows page + event details, a Commit Message field, and a Library help icon that opens ZDK documentation.
-- Static Resources section (right pane, below Information) lists the org's uploaded static resources for one-click Add into the current script; see `clientscript-static-resources`.
+- Static Resources section (right pane, below Information) lists the org's uploaded static resources for one-click Add into the current script; see [clientscript-static-resources.dou.md](./clientscript-static-resources.dou.md).
 - Run mode executes the script live — CRM operations performed in Run mode persist in the live CRM account (no sandbox isolation inside Run).
 - Run panel exposes Reload and Hard Reload of the underlying CRM tab for retesting.
 - Messages panel under Run logs execution metadata: event + script details, execution status, logs, exception messages, and execution time.

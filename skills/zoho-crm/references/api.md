@@ -24,7 +24,7 @@ For queries that touch multiple resources, repeat Step 2 for each resource.
 
 ### Step 2 — Locate or acquire the OAS resource folder
 
-> Each resource folder contains `{resource}.yaml` and a `mds/` subfolder with per-operation markdown files.
+> Each resource folder contains `{resource}.yaml`, an `index.md` overview, and an `operations/` subfolder. Each `operations/{operationId}/` directory contains `operation.md` and an `examples/` subfolder with `request.md` and `response-*.md` files.
 
 Check whether `.zoho-crm/references/api/{resource}/` exists (where `{resource}` is identified in Step 1 above):
 
@@ -34,38 +34,47 @@ Check whether `.zoho-crm/references/api/{resource}/` exists (where `{resource}` 
 3. **No local copy** — clone to `/tmp/crm-oas`, then `cp`:
    ```bash
    mkdir -p .zoho-crm/references/api/
-   [ -d /tmp/crm-oas ] || git clone --depth 1 https://github.com/dhineshkumar-ks-7377/crm-oas-test.git /tmp/crm-oas
+   [ -d /tmp/crm-oas ] || git clone --depth 1 --branch pre_main_mcp https://github.com/zoho/crm-oas.git /tmp/crm-oas
    cp -r /tmp/crm-oas/v8.0/{resource}/ .zoho-crm/references/api/{resource}/
    ```
    - If `cp` fails → `rm -rf /tmp/crm-oas`, re-run clone + `cp` once; if that also fails → HTTP fallback
 
 **HTTP fallback** (scenarios 2 and 3 on failure): fetch the entire YAML at:
 ```
-https://raw.githubusercontent.com/dhineshkumar-ks-7377/crm-oas-test/main/v8.0/{resource}/{resource}.yaml
+https://raw.githubusercontent.com/zoho/crm-oas/pre_main_mcp/v8.0/{resource}/{resource}.yaml
 ```
-Skip Steps 3, 4, 5; read the full YAML and proceed directly to Step 6.
+Skip Steps 3, 4, 4b, 5; read the full YAML and proceed directly to Step 6.
 
-### Step 3 — Pick the operation md
+### Step 3 — Identify the operation from the resource index
 
 ```bash
-ls .zoho-crm/references/api/{resource}/mds/
+cat .zoho-crm/references/api/{resource}/index.md
 ```
 
-Filenames are camelCase verb+noun and self-describe the operation — pick the one matching intent. If multiple files seem to match, prefer the more specific name (singular = single record operation, plural = multiple records operation).
+Each entry is a camelCase operationId directory name described in `index.md` — read the descriptions to pick the one matching intent. Prefer the more specific name (singular = single-record operation, plural = multiple-records operation).
 
-**If `mds/` is absent or empty** → skip Steps 3 and 4; proceed directly to Step 5.
+**If `index.md` and `operations/` are absent** → skip Steps 3, 4, 4b; proceed directly to Step 5.
 
 ### Step 4 — Read the operation md
 
 ```bash
-cat .zoho-crm/references/api/{resource}/mds/{operationId}.md
+cat .zoho-crm/references/api/{resource}/operations/{operationId}/operation.md
 ```
 
 Extract: HTTP method, path, parameters, request body fields (including nested schema details), responses per status code, OAuth scopes. The md is authoritative for schema structure and nested field details.
 
+### Step 4b — Read operation examples
+
+```bash
+cat .zoho-crm/references/api/{resource}/operations/{operationId}/examples/request.md
+cat .zoho-crm/references/api/{resource}/operations/{operationId}/examples/response-200-*.md
+```
+
+Read `examples/request.md` for named JSON request variants — use these to construct and validate the actual request body. Read the first relevant `examples/response-200-*.md` for the concrete success response shape. If `examples/` is absent or empty → skip this step silently and continue to Step 5. Examples are authoritative for concrete JSON shapes; they complement (not replace) the schema structure from `operation.md`.
+
 ### Step 5 — Run Python extractor *(optional)*
 
-**Skip this step if Python 3 is not available** — proceed directly to Step 6 using only the Step 4 md data. If Step 4 was also skipped, use the HTTP fallback YAML. Run this step when Python is available; if Step 4 was skipped (mds/ absent), run this directly.
+**Skip this step if Python 3 is not available** — proceed directly to Step 6 using Step 4 md data and Step 4b examples (if available). If Steps 4 and 4b were also skipped, use the HTTP fallback YAML. Run this step when Python is available; if Steps 4 and 4b were also skipped (operations/ absent), run this directly.
 
 ```bash
 python3 dx-education-docs/.github/skills/zoho-crm/assets/api/extract_schema.py \
@@ -89,19 +98,20 @@ Output (three labeled sections):
 <each schema from components/schemas referenced in requestBody and 2xx responses — one level deep>
 ```
 
-Error response schemas are excluded from `=== SCHEMAS ===` — they are covered by Step 4 md and Rule 5.
+Error response schemas are excluded from `=== SCHEMAS ===` — they are covered by Step 4 `operation.md`, Step 4b examples, and Rule 5.
 
 **Authority split**:
 
 | Source | Authoritative for |
 |---|---|
-| Step 4 md | Schema structure and nested field details |
+| Step 4 `operation.md` | Schema structure and nested field details |
+| Step 4b examples | Concrete request/response JSON shapes and named variants |
 | Step 5 `=== OPERATION ===` + `=== SCHEMAS ===` | Exact field names, constraints, security scopes |
 
-- If Step 4 md and Step 5 conflict on a field name or constraint, **Step 5 YAML wins** — treat the md as stale
-- If `security` is absent in Step 5 `=== OPERATION ===` (operation inherits global security), read scopes from Step 4 md instead; if Step 4 was also skipped, read the global `security` block from the full YAML
+- If Step 4 `operation.md` and Step 5 conflict on a field name or constraint, **Step 5 YAML wins** — treat the `operation.md` as stale
+- If `security` is absent in Step 5 `=== OPERATION ===` (operation inherits global security), read scopes from Step 4 `operation.md` instead; if Step 4 was also skipped, read the global `security` block from the full YAML
 
-**If Step 5 fails or is skipped** (Python unavailable, script not found, PyYAML missing, parse error) → proceed to Step 6 using Step 4 md data alone; if Step 4 was also skipped, fetch the entire `{resource}.yaml` via the fallback URL and read it directly.
+**If Step 5 fails or is skipped** (Python unavailable, script not found, PyYAML missing, parse error) → proceed to Step 6 using Step 4 md data and Step 4b examples (if available); if Steps 4 and 4b were also skipped, fetch the entire `{resource}.yaml` via the fallback URL and read it directly.
 
 ### Step 6 — Interpret and execute
 
@@ -109,17 +119,17 @@ All 6 rules below are Zoho-specific — do not skip any:
 
 1. **URL**: `servers[0].url` is `https://zohoapis.{dc}/crm/{version}`; substitute `{dc}` with the user's data-center suffix (`com`, `eu`, `in`, `cn`, `au`) and `{version}` with `v8`; append path params, then query params.
 2. **Auth**: Read `security` at the **operation level** (overrides global default). Entries = OR alternatives; scopes within entry = AND. Pick the most permissive general option. Settings operations require `ZohoCRM.settings.*.READ` in addition to module scope — always check the resource folder + operation md, never assume module-scope alone suffices. Header: `Authorization: Zoho-oauthtoken {access_token}`.
-3. **Body**: All `$ref` are internal (`#/components/schemas/...`). Use Step 4 md for schema structure and nested field details; use Step 5 `=== SCHEMAS ===` output for exact field names and constraints when available. If Step 5 was skipped, rely on Step 4 md alone. Preserve every property name **exactly** as found — Zoho silently ignores renamed/inferred fields.
+3. **Body**: All `$ref` are internal (`#/components/schemas/...`). Use Step 4 `operation.md` for schema structure and nested field details; use Step 4b `examples/request.md` for concrete request body shapes and named variants; use Step 5 `=== SCHEMAS ===` output for exact field names and constraints when available. If Step 5 was skipped, rely on Step 4 `operation.md` and Step 4b examples (if available). Preserve every property name **exactly** as found — Zoho silently ignores renamed/inferred fields.
 4. **Validate**: Confirm all required path params, query params, headers, and body fields are present before executing. Report missing items; never assume a value.
-5. **Errors**: 4xx → extract `code` + `message` from error body, explain cause, suggest fix (missing scope → add OAuth scope; invalid field → check API name). 5xx → surface raw response, wait 10 s, retry once; if persists, escalate to Zoho CRM support.
+5. **Errors**: 4xx → extract `code` + `message` from error body, explain cause, suggest fix (missing scope → add OAuth scope; invalid field → check API name); also check `operations/{operationId}/examples/response-{code}-*.md` — filenames encode the error title (e.g., `response-400-invalidmodule.md`), match the `code` field to the filename suffix for a concrete JSON reference. 5xx → surface raw response, wait 10 s, retry once; if persists, escalate to Zoho CRM support.
 6. **Execute**: If MCP tools are connected → call the tool with exact OAS-derived parameters. If not connected → output the complete cURL command with all headers, body, and expected response structure.
 
 ## Git Repo
 
 ```
-https://github.com/dhineshkumar-ks-7377/crm-oas-test.git
+https://github.com/zoho/crm-oas (branch: pre_main_mcp)
 ```
-Use the `v8.0/` folder. Files are OpenAPI Specification (OAS) 3.1.0 format (`.yaml`), organized into per-resource subfolders. Each folder contains `{resource}.yaml` and a `mds/` subfolder with per-operation markdown files.
+Use the `v8.0/` folder, branch `pre_main_mcp`. Files are OpenAPI Specification (OAS) 3.1.0 format (`.yaml`), organized into per-resource subfolders. Each folder contains `{resource}.yaml`, an `index.md` overview, and an `operations/` subfolder. Each `operations/{operationId}/` directory contains `operation.md` and an `examples/` subfolder with `request.md` and `response-*.md` files.
 
 ## API Base URL
 

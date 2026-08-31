@@ -28,5 +28,5 @@ CRITICAL_FAILURE_MODES:
 - The sample uses `Name` as the first-name API name — module-specific renames must update the script accordingly; copy-pasting the sample to a module whose first-name field is `First_Name` silently no-ops.
 - Page `onChange` re-runs on every field change — placing heavy logic (age recomputation) inside an unconditional branch wastes execution time; gate inside a `field_name === '<API>'` check.
 - `value` argument inside Field `onChange` is the raw new value — for `Date_of_Birth` it is a date string, not a Date object; constructing `new Date(value)` is required before arithmetic.
-- `showError` raises an inline error but does NOT block the user from clicking Save — to block save, add an `onSave` Page Event with `return false` (see `clientscript-events`).
+- `showError` raises an inline error but does NOT block the user from clicking Save — to block save, add an `onSave` Page Event with `return false` (see [clientscript-events.dou.md](./clientscript-events.dou.md)).
 - Layout binding — these scripts run only for the layout selected at creation; multi-layout `Policyholder` deployments need one script copy per layout. (layout-binding)

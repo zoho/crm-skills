@@ -8,8 +8,8 @@ TECHNICAL_CONSTRAINTS:
 - **`insertRows(values, index?)`** — `values` is an array of row objects. If `index` provided, rows are inserted at that index; if omitted, rows append.
 - **`deleteRow(index)`** removes a single row at the given 0-based index.
 - **`clear()`** removes all rows.
-- **`getRow(index) → SubformRow`** — 0-based index; see `subformrow.dou.md`.
-- **`getField(api_name) → SubformField`** — returns the SubformField definition (not a per-row cell); see `subformfield.dou.md` for the field-level operations.
+- **`getRow(index) → SubformRow`** — 0-based index; see [subformrow.dou.md](./subformrow.dou.md).
+- **`getField(api_name) → SubformField`** — returns the SubformField definition (not a per-row cell); see [subformfield.dou.md](./subformfield.dou.md) for the field-level operations.
 - **Row indexing is 0-based** (source examples show `getRow(0)` / `getRow(1)` for first / second).
 
 REQUIRED_PARAMETERS:

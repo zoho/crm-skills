@@ -4,7 +4,7 @@ TRIGGER_KEYWORDS: COQL limits, max records, max joins, max subqueries, unsupport
 
 TECHNICAL_CONSTRAINTS:
 - **Record pagination ceiling** — at most 1,00,000 records can be returned across paginated calls per unique criteria. For larger sets, switch to the Bulk Read API.
-- **Per-call LIMIT cap** — max 2000 records per single API call; default 200 (see `coql-overview.dou.md`).
+- **Per-call LIMIT cap** — max 2000 records per single API call; default 200 (see [coql-overview.dou.md](./coql-overview.dou.md)).
 - **SELECT column cap** — max 500 fields in the SELECT clause per query.
 - **WHERE criteria cap** — max 25 criteria in WHERE per query.
 - **ORDER BY cap** — max 10 fields.
@@ -12,21 +12,21 @@ TECHNICAL_CONSTRAINTS:
 - **Aggregate function cap** — max 5 aggregate columns per query.
 - **Dynamic formula field cap** — max 5 dynamic formula fields in SELECT per query.
 - **`IN` / `NOT IN` value cap** — max 100 values per comparator.
-- **Subquery caps** — max 5 subqueries per parent query; max 100 records per subquery; subqueries valid only in WHERE; single SELECT column inside the subquery (see `coql-subquery.dou.md`).
-- **JOIN caps** — max 5 Base JOINs per query; max 15 SELECT-column JOINs per query (see `coql-joins.dou.md`).
+- **Subquery caps** — max 5 subqueries per parent query; max 100 records per subquery; subqueries valid only in WHERE; single SELECT column inside the subquery (see [coql-subquery.dou.md](./coql-subquery.dou.md)).
+- **JOIN caps** — max 5 Base JOINs per query; max 15 SELECT-column JOINs per query (see [coql-joins.dou.md](./coql-joins.dou.md)).
 - **Relation-chain depth cap** — max 2 relations per single dotted traversal (`A.B.C` is depth 2; `A.B.C.D` exceeds the cap).
 - **Silent partial-validation for > 2 relations** — source literally states: "If you use more than two relations in a select query, system validates only the last two relations." This contradicts the Get-Records error catalog which raises `LIMIT_EXCEEDED` for "more than two joins."
 - **Notes module** — only admin users can query the Notes module via COQL. Non-admin requests return empty / forbidden.
 - **Unsupported field types in WHERE / criteria** — Territory fields (Accounts/Contacts/Leads `Territories`, Deals `Territory`), Multi-Select Lookup, Multi-line text fields (`Description`, `Terms and Conditions`, `Comments`), Line Items, Participants, File Upload, Attachments, Image Upload, Tuple.
 - **Territory fields** — usable only in SELECT, never in WHERE / ORDER BY / GROUP BY.
 - **Multi-line text fields** in `{Description, Terms and Conditions, Comments}` — cannot be used in criteria; safe in SELECT only.
-- **Multi-Select Lookup (MxN)** — direct field reference in WHERE is unsupported; query via the linking module instead (see `coql-execute.dou.md`).
+- **Multi-Select Lookup (MxN)** — direct field reference in WHERE is unsupported; query via the linking module instead (see [coql-execute.dou.md](./coql-execute.dou.md)).
 - **Subform** — query via the subform module's own API name (subforms are independent modules); cannot be traversed via `.` from the parent module.
 - **`Tuple` data type** — unsupported across the COQL surface.
-- **Image Upload vs Record Image** — generic Image Upload fields are unsupported; the special `Record_Image` (profile image) field IS queryable in COQL and returns the image ID (see `coql-execute.dou.md`).
+- **Image Upload vs Record Image** — generic Image Upload fields are unsupported; the special `Record_Image` (profile image) field IS queryable in COQL and returns the image ID (see [coql-execute.dou.md](./coql-execute.dou.md)).
 - **External ID lookup** — supported (per Get-Records source); query via `External_Id_Field_API_Name` directly.
 - Picklist WHERE comparator runtime cap: `=`, `!=` are the only operator reliably accepted by the COQL engine for Picklist fields. The Limitations page (listing only `=`) matches production behavior; the Get-Records comparator matrix listing `in`, `not in`, `like`, `not like` for Picklist is stale. Use only `=` for Picklist WHERE filters; handle exclusion logic client-side.
-- **Encrypted fields** — restricted comparator set (see `coql-execute.dou.md`).
+- **Encrypted fields** — restricted comparator set (see [coql-execute.dou.md](./coql-execute.dou.md)).
 - **API credit consumption per call** — `LIMIT 1`–`200` = 1 credit, `LIMIT 201`–`1000` = 2 credits, `LIMIT 1001`–`2000` = 3 credits.
 
 REQUIRED_PARAMETERS:
@@ -52,7 +52,7 @@ CRITICAL_FAILURE_MODES:
 - Single dotted traversal of depth 3 (`A.B.C.D`): `LIMIT_EXCEEDED` 400 (`more than two joins`) — flatten via intermediate query or subquery.
 - Subform queried via parent-module dot traversal (`Parent_Module.Subform_Field.Inner_Field`): unsupported — query the subform's own module API name directly.
 - Author treats Tuple field as queryable: feature unavailable — Tuple is not supported in any COQL clause.
-- Pre-V7 client assumes Lookup display names auto-return: only V7+ surfaces display names for Lookup / User Lookup; older API versions return only `{id, name}` (see `coql-execute.dou.md`).
+- Pre-V7 client assumes Lookup display names auto-return: only V7+ surfaces display names for Lookup / User Lookup; older API versions return only `{id, name}` (see [coql-execute.dou.md](./coql-execute.dou.md)).
 - Author depends on Consent Lookup display name returning: never surfaced (only `id`) — separate Field Metadata fetch required.
 - Credit-budget exhaustion under sustained `LIMIT 2000` paging: each call costs 3 credits — model 3 × page_count against the org's per-day credit budget.
 - Caller relies on `more_records: false` to declare completion at exactly 1,00,000 records: per source, the cap is per unique criteria — `more_records` returns `false` both when the dataset ends and when the cap is hit. Distinguish dataset end vs cap hit via cumulative row count check against 1,00,000.

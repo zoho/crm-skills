@@ -16,8 +16,8 @@ TECHNICAL_CONSTRAINTS:
 - ZRC (Zoho Request Client) is a built-in SDK with one consistent syntax for CRM APIs, Connection requests, and public APIs; **org-level feature enablement required when used from ClientScript; available by default in Widgets without any org enablement**.
 
 REQUIRED_PARAMETERS:
-- Trigger category — choose Module (for event-based) or Commands (for command palette / keyboard shortcut) when creating a script (see `clientscript-creation`).
-- Event family per supported page (page-event vs field-event vs subform-event vs button-event vs blueprint-event vs tag-event vs mandatory-form-event vs canvas-button/icon/text vs notes-related-list) — full event list in `clientscript-events`.
+- Trigger category — choose Module (for event-based) or Commands (for command palette / keyboard shortcut) when creating a script (see [clientscript-creation.dou.md](./clientscript-creation.dou.md)).
+- Event family per supported page (page-event vs field-event vs subform-event vs button-event vs blueprint-event vs tag-event vs mandatory-form-event vs canvas-button/icon/text vs notes-related-list) — full event list in [clientscript-events.dou.md](./clientscript-events.dou.md).
 - ZDK Client API surface (in-page UI + record field manipulation) — entry points include `ZDK.Page.getField`, `ZDK.Client.showAlert`; full surface in the Client APIs nodes.
 - ZDK Web API surface (CRM data reads / writes via the SDK) — entry point `ZDK.Apps.CRM.*` family; full surface in the Web APIs nodes.
 - Portal user context — read user-specific details from `$Crm.user` when running inside a Portal.
@@ -33,9 +33,9 @@ CRITICAL_FAILURE_MODES:
 - Caller's profile missing Developer Permissions: Client Script setup is inaccessible for that profile; admin sees it work, end-users get silent no-fire. (profile-binding)
 - Layout-binding mismatch — script attached to one layout will not fire on records using a different layout of the same module; no error, no log. (layout-binding)
 - Browser off the supported-versions list: Client Script does not run on that browser; verify browser before triage.
-- Execution exceeds 10 s: the script is halted; long-running ZDK Web API or third-party calls require a loader pattern (see `clientscript-best-practices`).
+- Execution exceeds 10 s: the script is halted; long-running ZDK Web API or third-party calls require a loader pattern (see [clientscript-best-practices.dou.md](./clientscript-best-practices.dou.md)).
 - ZDK Web (CRM) API calls account for an API credit per invocation — high-fan-out scripts drain the daily credit pool.
 - ZRC org feature not enabled: `zrc` is unavailable in the ClientScript runtime — fails silently or throws on first call; confirm org enablement before using ZRC from ClientScript. In Widgets, ZRC is available by default.
-- ZRC errors not caught in `try/catch`: silently absorbed by the ClientScript environment — no console error, no log (see `clientscript-zrc.dou.md`).
+- ZRC errors not caught in `try/catch`: silently absorbed by the ClientScript environment — no console error, no log (see [clientscript-zrc.dou.md](./zrc/clientscript-zrc.dou.md)).
 - Custom Button Client Script attempted from the standalone Client Script page instead of the Buttons page: creation rejected; use the Buttons page.
 - Portal Client Script auto-enables for newly created user types — assume opt-in unless explicitly disabled per user type.

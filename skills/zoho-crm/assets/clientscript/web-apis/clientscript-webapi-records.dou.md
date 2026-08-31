@@ -40,10 +40,10 @@ CRITICAL_FAILURE_MODES:
 - Reassigning a lookup via `record.Owner(newUser)` and forgetting the trailing `__update()` → in-memory change only; not persisted — silent no-op against CRM.
 - Mixing scalar `Owner_Lookup_Id` write with a subsequent `Owner(otherUser)` method call before `__update` → the method-form wins and overwrites the scalar; ordering ambiguity.
 - Calling `Owner()` no-arg in a loop → fires one extra API call per iteration.
-- Prefer batch hydration via `clientscript-webapi-settings` or module facade `fetchById` when resolving many owners.
+- Prefer batch hydration via [clientscript-webapi-settings.dou.md](./clientscript-webapi-settings.dou.md) or module facade `fetchById` when resolving many owners.
 - `__convert` invoked on an already-converted Lead → API returns conversion-not-allowed; pre-check `Converted` state.
 - `__updateRelatedRecords` with the wrong `related_list_api_name` for the module (e.g. `"Deals"` on a module that exposes `"Potentials"`) → silently no-ops.
-- Resolve `related_list_api_name` via `clientscript-webapi-settings` `fetchRelatedLists`.
+- Resolve `related_list_api_name` via [clientscript-webapi-settings.dou.md](./clientscript-webapi-settings.dou.md) `fetchRelatedLists`.
 - `__sendMail` payload missing `mail_format` → API rejects.
 - `__sendMail` payload missing `from` or `to` entries → API rejects malformed-mail.
 - `__getFeatureSpecificInfo` invoked with > 5 features (source-stated cap) → request-too-large error.

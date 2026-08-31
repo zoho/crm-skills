@@ -38,13 +38,13 @@ CRITICAL_FAILURE_MODES:
 - Widget-runtime writes do not surface a `trigger` knob in source — all writes fire the full workflow / blueprint / approval stack; cannot suppress automation from `ZOHO.CRM.API`.
 - `getAllRecords` consumer that does not loop on `info.more_records`: silently truncates dataset at page 1 (200 rows).
 - `attachFile` / `uploadFile` invoked against a module where the Files related-list is hidden by profile: returns success but file is not attached visibly — verify the related-list visibility per profile.
-- `insertRecord` for a record violating a layout-level mandatory field: returns 400 — pre-validate against `widgets-jssdk-meta` `getFields`.
-- `coql` SELECT exceeding the documented row cap (see `widgets-zrc-reference` for ceiling): silently truncated — page via `LIMIT` + `OFFSET`.
+- `insertRecord` for a record violating a layout-level mandatory field: returns 400 — pre-validate against [widgets-jssdk-meta.dou.md](./widgets-jssdk-meta.dou.md) `getFields`.
+- `coql` SELECT exceeding the documented row cap (see [widgets-zrc-reference.dou.md](../widgets-zrc-reference.dou.md) for ceiling): silently truncated — page via `LIMIT` + `OFFSET`.
 - `upsertRecord` against a module with no duplicate-check fields defined: every call creates a new record instead of upserting.
 - Cross-module joins in `coql` against a module the logged-in user lacks read access to: rows filtered silently — no warning that visibility, not query, caused the omission.
 - `getApprovalRecords` / `getApprovalsHistory` consumer assumes single-page response: long approval queues paginate — honour `info.more_records`.
 - `getFile` invoked for an attachment behind sharing rules the user lacks: returns 401 without body — surface to the caller, do not retry.
 - `addNotes` payload without `Content`: API accepts but creates an empty note — require non-empty `Content` at the caller.
-- `delinkRelatedRecord` invoked without the `RelatedListAPIName` matching the module schema (e.g. `"Deals"` vs `"Potentials"`): silently no-ops — read related-list API name from `widgets-jssdk-meta` `getRelatedList`.
+- `delinkRelatedRecord` invoked without the `RelatedListAPIName` matching the module schema (e.g. `"Deals"` vs `"Potentials"`): silently no-ops — read related-list API name from [widgets-jssdk-meta.dou.md](./widgets-jssdk-meta.dou.md) `getRelatedList`.
 - `approveRecord` called against a record not in an approval queue for the current user: returns approval-not-pending error — pre-check via `getApprovalRecords`.
 - `getOrgVariable` requested by display label rather than variable API name: returns null — `label-vs-api-name`.

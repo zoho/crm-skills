@@ -38,8 +38,8 @@ UI_ONLY_ACTIONS:
 CRITICAL_FAILURE_MODES:
 - `profile` supplied as display name (`"Administrator"`) instead of profile id string → CRM rejects with invalid-id / not-found — `label-vs-api-name`.
 - `role` supplied as display name (`"CEO"`) instead of role id string → CRM rejects with invalid-id / not-found — `label-vs-api-name`.
-- Resolve `profile` ids via `clientscript-webapi-settings` `fetchProfiles`.
-- Resolve `role` ids via `clientscript-webapi-settings` `fetchRolesById`.
+- Resolve `profile` ids via [clientscript-webapi-settings.dou.md](./clientscript-webapi-settings.dou.md) `fetchProfiles`.
+- Resolve `role` ids via [clientscript-webapi-settings.dou.md](./clientscript-webapi-settings.dou.md) `fetchRolesById`.
 - `create` payload missing any of `first_name` / `last_name` / `email` / `profile` / `role` (per source sample) → API returns mandatory-field error.
 - `create` helpers do not default missing required fields.
 - `create` with `email` already assigned to another org user → API returns duplicate-user error.

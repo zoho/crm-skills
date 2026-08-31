@@ -5,7 +5,7 @@ TRIGGER_KEYWORDS: SQL Limits, SELECT, INSERT, UPDATE, DELETE, LIMIT, OFFSET, ISO
 TECHNICAL_CONSTRAINTS:
 - Edition-wise Query cap (per org): **Professional 100**, **Enterprise 250**, **Ultimate 500** Queries total across all Sources / Types.
 - Source caps: **REST API sources** — 200 (Enterprise + Ultimate); **SQL sources** (External DB + Cloud DB combined) — 5 (Enterprise + Ultimate).
-- `SELECT` allowed on **read-only and writable** sources; `INSERT` / `UPDATE` / `DELETE` allowed **only** on writable sources (Read Only flag off — see `queries-types`).
+- `SELECT` allowed on **read-only and writable** sources; `INSERT` / `UPDATE` / `DELETE` allowed **only** on writable sources (Read Only flag off — see [queries-types.dou.md](./queries-types.dou.md)).
 - `SELECT *` is **rejected** — explicit column list mandatory; column-count cap **50**.
 - `LIMIT` is **mandatory on every SELECT** — if omitted, server applies a default of **100**; the maximum value caller can pass is also **100** (read cap is hard-bounded at 100 rows per execution).
 - `OFFSET` paired with `LIMIT` is the documented pagination idiom; MicrosoftSQL uses `OFFSET n ROWS FETCH NEXT m ROWS ONLY` instead.
@@ -17,7 +17,7 @@ TECHNICAL_CONSTRAINTS:
 - `INSERT` and `UPDATE` must list columns explicitly — implicit column ordering is not accepted.
 - Supported SQL functions (whitelist): `SUM()`, `COUNT()`, `AVG()`, `MIN()`, `MAX()`, `LOWER()`, `UPPER()`. Other DB-native functions execute only if they are syntactic identifiers the server treats as expressions.
 - Non-conforming queries return a documented error message — surface it to the consumer rather than retrying.
-- Per `queries-types`, SQL queries execute under the configured source credentials, **not** the consumer user — Developer-permissioned users share that privilege.
+- Per [queries-types.dou.md](./queries-types.dou.md), SQL queries execute under the configured source credentials, **not** the consumer user — Developer-permissioned users share that privilege.
 
 REQUIRED_PARAMETERS:
 - SELECT shape: `SELECT col1, col2, ... FROM table [JOIN ...] [WHERE ...] [GROUP BY ...] [HAVING ...] [ORDER BY ...] [OFFSET n] LIMIT m;` — LIMIT ≤ 100.
@@ -25,7 +25,7 @@ REQUIRED_PARAMETERS:
 - UPDATE shape: `UPDATE {table} SET col1 = val1, ... WHERE col_a = val_a AND col_b = val_b;` — non-empty WHERE.
 - DELETE shape: `DELETE FROM {table} WHERE col_a = val_a AND col_b = val_b;` — non-empty WHERE.
 - Sample executable queries (PostgreSQL / MySQL form): canonical SELECT with `INNER JOIN`, `WHERE … BETWEEN`, `GROUP BY`, `HAVING`, `ORDER BY`, `OFFSET … LIMIT` (see source).
-- Variables in any clause: `{{Variable_Name}}` — case-sensitive, resolved at execution by the consumer's variable mapping (see `queries-associating`).
+- Variables in any clause: `{{Variable_Name}}` — case-sensitive, resolved at execution by the consumer's variable mapping (see [queries-associating.dou.md](./queries-associating.dou.md)).
 
 UI_ONLY_ACTIONS:
 *(none in source)*
@@ -37,7 +37,7 @@ CRITICAL_FAILURE_MODES:
 - Sub-query authored inside `WHERE col IN (SELECT ...)`: rejected — re-express as JOIN or stage with a prior Screen Query (Kiosk).
 - Date literal `2025/07/15 10:00:00` or `15-Jul-2025`: rejected — convert to ISO 8601 (`2025-07-15T10:00:00`).
 - Column typed `JSON` in source schema: query returns rejection or stringified blob — pre-flatten in the source DB view, do not rely on Queries to parse JSON.
-- INSERT / UPDATE on a source whose `Read Only` flag is on: rejected — flip `Read Only` off intentionally (see `queries-types`) and audit.
+- INSERT / UPDATE on a source whose `Read Only` flag is on: rejected — flip `Read Only` off intentionally (see [queries-types.dou.md](./queries-types.dou.md)) and audit.
 - INSERT without explicit column list: rejected — list every column to be written.
 - UPDATE / DELETE issued without a WHERE clause: behaviour is not documented in `sql-limits.html` and varies per source DB — always scope mutations with explicit predicates rather than relying on platform-side guardrails.
 - 6th JOIN added during refactor: query rejects — collapse two joins via a DB-side view or split into staged Queries.

@@ -24,7 +24,7 @@ UI_ONLY_ACTIONS:
 - Open ZDK docs: in the IDE Information panel, click the help icon inside the Library section. Note: No API equivalent — UI-only.
 
 CRITICAL_FAILURE_MODES:
-- Layout selected at creation time fixes the script binding — selecting the wrong layout silently no-fires on records using a different layout. (layout-binding) See `clientscript-overview` for the per-layout-script rule.
+- Layout selected at creation time fixes the script binding — selecting the wrong layout silently no-fires on records using a different layout. (layout-binding) See [clientscript-overview.dou.md](./clientscript-overview.dou.md) for the per-layout-script rule.
 - Save and Close persists the script in the setup list with an enable/disable status toggle; use the toggle to enable the script before it will execute (source: "You can enable a script by sliding the toggle button.").
 - Category mismatch — choosing Module for a command-style script (or Commands for a module-bound script) routes the script away from its intended trigger surface. (category-binding)
 - In-record creation pre-populates Page / Module / Layout from the current record context; editing those fields requires returning to the Setup-page edit flow.

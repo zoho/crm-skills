@@ -5,7 +5,7 @@ TRIGGER_KEYWORDS: ZDK.Page.getField, ZDK.Client.showLoader, ZDK.Client.hideLoade
 TECHNICAL_CONSTRAINTS:
 - Client Script execution is bounded by a 10-second timeout; long-running ZDK Web (CRM) API or third-party calls must be wrapped in a loader to pause the user-perceived flow.
 - Hard cap — up to 30 Client Scripts per page.
-- Hard cap — up to 5 Static Resources per page (echoes `clientscript-static-resources`).
+- Hard cap — up to 5 Static Resources per page (echoes [clientscript-static-resources.dou.md](./clientscript-static-resources.dou.md)).
 - Per-event argument injection — each event handler receives a documented argument variable; the handler reads the injected variable directly instead of re-fetching via ZDK.
 - Reorder of script execution order is scoped to a single Page + Event combo within a module — cross-event / cross-page ordering is not configurable.
 - Third-party API calls from Client Script require the target domain to be whitelisted in `Trusted Domains` before the request will succeed.
@@ -28,7 +28,7 @@ REQUIRED_PARAMETERS:
     ```
 - Static-resource reuse — extract repeated logic (e.g. SSN regex `is_socialSecurity_Number`) into a JS file uploaded as a Static Resource, then call by bare function name from the script.
 - Multi-field handling on the same page — prefer one Page `onChange` script with `switch(field_name)` over multiple Field `onChange` scripts.
-- Debug logging — `log(...)` statements surface in the IDE Run → Messages panel; do not rely on browser `console.log` (see `clientscript-ide-components`).
+- Debug logging — `log(...)` statements surface in the IDE Run → Messages panel; do not rely on browser `console.log` (see [clientscript-ide-components.dou.md](./clientscript-ide-components.dou.md)).
 - Ad-hoc ZDK invocation — use the Run → Terminal panel (e.g. `ZDK.Client.showMessage('...', { type: 'info' })`) to test ZDK calls without saving a script.
 - Event-type → use-case mapping (Best Practice #9, source-verbatim):
     · Pre-save validation across the whole record — Page `onSave`.
@@ -45,7 +45,7 @@ CRITICAL_FAILURE_MODES:
 - Skipping the loader on a > 10 s ZDK / third-party call: execution halts at 10 s; user-perceived save / transition appears frozen. (timeout)
 - Third-party `fetch(...)` to a non-whitelisted domain returns a network error; add the domain to Trusted Domains before retry. (trusted-domain)
 - Multiple Field `onChange` scripts on the same page create ordering ambiguity even with Reorder applied; consolidate into one Page `onChange` with a `switch(field_name)`.
-- Layout binding — Client Scripts execute only for the configured layout; multi-layout coverage requires one script per layout (see `clientscript-overview`). (layout-binding)
+- Layout binding — Client Scripts execute only for the configured layout; multi-layout coverage requires one script per layout (see [clientscript-overview.dou.md](./clientscript-overview.dou.md)). (layout-binding)
 - The injected `value` argument is scoped to the current event family — `value` in Field `onChange` is the new field value; in Mandatory-Form events it is the form-level map. Reusing the variable name across event types misreads the payload.
 - 30-script cap per page — adding a 31st script is rejected; consolidate using `switch` blocks.
 - `field_name` argument is provided only on Page `onChange` and Wizard `onChange` per the source table — relying on it inside Page `onLoad` / `onSave` returns `undefined`.

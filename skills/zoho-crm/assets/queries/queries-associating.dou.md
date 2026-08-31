@@ -11,7 +11,7 @@ TECHNICAL_CONSTRAINTS:
 - List View Canvas requires Table-shape — Map shapes render only the first record.
 - Kiosk Decision can only consume a Query whose data was fetched in an **earlier** Screen of the same Kiosk — direct fetch from the Decision step is not supported.
 - Custom Related List binding lives on the record's three-dot menu (`Add Related List → Queries`); list is per-record-view and re-executes on every record open with the merge-field-mapped variables.
-- Serializer is the recommended hook for lookup expansion in Custom Related Lists — return `{ id, name, module }` objects to render clickable cell links, and `{ label, href }` objects to render external URLs (see `queries-overview`).
+- Serializer is the recommended hook for lookup expansion in Custom Related Lists — return `{ id, name, module }` objects to render clickable cell links, and `{ label, href }` objects to render external URLs (see [queries-overview.dou.md](./queries-overview.dou.md)).
 - Filter-by-Record-ID (Module type's `Record ID` criteria mode) returns the single record directly; using Record ID inside a `Criteria` clause returns a one-element array — placement consumers must handle the array shape.
 - Variable mapping at the association is per-binding — the same Query bound to two Canvases can map the same `{{Variable}}` to different merge fields.
 - `View Associations` enumerates every binding but does not show variable-mapping details — open each binding to inspect.
@@ -40,7 +40,7 @@ CRITICAL_FAILURE_MODES:
 - Variable mapping renamed in the CRM field but not re-saved at the association: stale field reference returns null — re-bind on every merge-field rename.
 - `Record ID` filter mode chosen but caller still wraps the result as `result[0]` because they tested with `Criteria` first: shape differs between the two modes — branch on mode, do not assume array.
 - Custom Related List bound to a Query that references a Subform field by display label: list renders blank cells — use Subform-field API names. (label-vs-api-name)
-- Canvas List View Query missing `LIMIT` in COQL body relies on the default 100 (see `queries-limits`): user expects "all records" but sees 100 — set explicit LIMIT and paginate in the consumer.
+- Canvas List View Query missing `LIMIT` in COQL body relies on the default 100 (see [queries-limits.dou.md](./queries-limits.dou.md)): user expects "all records" but sees 100 — set explicit LIMIT and paginate in the consumer.
 - Custom Related List rebound to a new Query API Name without updating the variable mapping: new Query's variables differ — re-open and re-map.
 - `View Associations` not consulted before deleting a Query: every binding silently breaks — audit before delete.
 - Kiosk Screen Query returning a Table when a single record is expected: identifier configuration becomes mandatory — set the identifier field, or constrain the Query to return a Map.

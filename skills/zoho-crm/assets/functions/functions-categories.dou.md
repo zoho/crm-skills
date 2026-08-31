@@ -109,8 +109,8 @@ map validation_rule.FunctionName(string crmAPIRequest){
 - Category cannot be changed after Function creation — delete and recreate if wrong category was selected.
 
 ## RELATED_DOCS
-- Execution contexts and lifecycle → `assets/functions/functions-overview.dou.md`
-- Common coding patterns → `assets/functions/functions-patterns.dou.md`
+- Execution contexts and lifecycle → [functions-overview.dou.md](./functions-overview.dou.md)
+- Common coding patterns → [functions-patterns.dou.md](./functions-patterns.dou.md)
 - CRM integration tasks → `assets/functions/deluge/integrations/zoho-crm/`
 
 ## SOURCE

@@ -37,8 +37,8 @@ CRITICAL_FAILURE_MODES:
 - `UI.Widget.open` `Entity` populated with the WebTab display label instead of the WebTab Widget name: target never opens — `label-vs-api-name`.
 - `UI.Widget.open` target Widget caches its first `PageLoad.Message` payload across re-opens: subsequent re-opens pass new `Message` but UI shows the first — re-read `data` on every `PageLoad`, never cache outside the event closure.
 - `UI.Dialer.*` invoked when no telephony integration is registered: resolves `false` — feature-detect before exposing dialer controls.
-- `UI.Resize` invoked on a Widget hosted in a non-resizable location (e.g. a fixed-size dashboard tile): resolves `false`, no UI change — verify location supports resize via parent-skill `widgets-usage`.
-- `UI.Record.edit` `RecordID` for a record the user lacks update permission on: navigation opens but save fails downstream — pre-check via `widgets-jssdk-meta` profile / layout data.
+- `UI.Resize` invoked on a Widget hosted in a non-resizable location (e.g. a fixed-size dashboard tile): resolves `false`, no UI change — verify location supports resize via parent-skill [widgets-usage.dou.md](../widgets-usage.dou.md).
+- `UI.Record.edit` `RecordID` for a record the user lacks update permission on: navigation opens but save fails downstream — pre-check via [widgets-jssdk-meta.dou.md](./widgets-jssdk-meta.dou.md) profile / layout data.
 - Calling `UI.Popup.closeReload` from a popup that just performed a `zoho.crm.update` with `{"trigger":[]}`: workflow / blueprint state still stale on the reloaded view — see parent-skill Top-5 Gotcha #3.
 - `UI.Record.populate` invoked on a detail-page-only context (no edit form mounted): silently no-op — gate on the current form mode from `PageLoad`.
 - `UI.Resize` invoked repeatedly inside a window-resize handler: layout thrash — debounce or throttle the call.
@@ -47,4 +47,4 @@ CRITICAL_FAILURE_MODES:
 - `UI.Record.open` for a record in a module the user can read but not edit: opens detail page only — caller expecting an edit form must use `edit` and handle 403.
 - `UI.Record.create` `Entity` for a custom module whose layouts vary per profile: form opens with default layout, not the user's profile-bound layout — layout binding is admin-set, not caller-controlled.
 - `UI.Popup.close` invoked twice from the same click handler: second call rejects — guard with a `done` flag.
-- `UI.Widget.open` target Widget bound to a WebTab the current user lacks profile access to: navigation no-ops silently — feature-detect via `widgets-jssdk-meta` `getModules`.
+- `UI.Widget.open` target Widget bound to a WebTab the current user lacks profile access to: navigation no-ops silently — feature-detect via [widgets-jssdk-meta.dou.md](./widgets-jssdk-meta.dou.md) `getModules`.
