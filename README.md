@@ -24,8 +24,9 @@ The skill combines routing logic, primitive selection, code generation, and vali
 
 Learn more about the zoho-crm skill from its [README](/skills/zoho-crm/README.md).
 
-Repository Structure
+## Repository Structure
 
+```text
 crm-skills/
 └── zoho-crm/
     ├── SKILL.md
@@ -46,6 +47,7 @@ crm-skills/
         ├── coql/
         ├── queries/
         └── connections/
+```
 
 Each skill is self-contained and can be installed independently into a compatible Agent Skill environment.
 
