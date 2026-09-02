@@ -34,14 +34,14 @@ Check whether `.zoho-crm/references/api/{resource}/` exists (where `{resource}` 
 3. **No local copy** — clone to `/tmp/crm-oas`, then `cp`:
    ```bash
    mkdir -p .zoho-crm/references/api/
-   [ -d /tmp/crm-oas ] || git clone --depth 1 --branch pre_main_mcp https://github.com/zoho/crm-oas.git /tmp/crm-oas
+   [ -d /tmp/crm-oas ] || git clone --depth 1 https://github.com/zoho/crm-oas.git /tmp/crm-oas
    cp -r /tmp/crm-oas/v8.0/{resource}/ .zoho-crm/references/api/{resource}/
    ```
    - If `cp` fails → `rm -rf /tmp/crm-oas`, re-run clone + `cp` once; if that also fails → HTTP fallback
 
 **HTTP fallback** (scenarios 2 and 3 on failure): fetch the entire YAML at:
 ```
-https://raw.githubusercontent.com/zoho/crm-oas/pre_main_mcp/v8.0/{resource}/{resource}.yaml
+https://raw.githubusercontent.com/zoho/crm-oas/main/v8.0/{resource}/{resource}.yaml
 ```
 Skip Steps 3, 4, 4b, 5; read the full YAML and proceed directly to Step 6.
 
@@ -127,9 +127,9 @@ All 6 rules below are Zoho-specific — do not skip any:
 ## Git Repo
 
 ```
-https://github.com/zoho/crm-oas (branch: pre_main_mcp)
+https://github.com/zoho/crm-oas
 ```
-Use the `v8.0/` folder, branch `pre_main_mcp`. Files are OpenAPI Specification (OAS) 3.1.0 format (`.yaml`), organized into per-resource subfolders. Each folder contains `{resource}.yaml`, an `index.md` overview, and an `operations/` subfolder. Each `operations/{operationId}/` directory contains `operation.md` and an `examples/` subfolder with `request.md` and `response-*.md` files.
+Use the `v8.0/` folder. Files are OpenAPI Specification (OAS) 3.1.0 format (`.yaml`), organized into per-resource subfolders. Each folder contains `{resource}.yaml`, an `index.md` overview, and an `operations/` subfolder. Each `operations/{operationId}/` directory contains `operation.md` and an `examples/` subfolder with `request.md` and `response-*.md` files.
 
 ## API Base URL
 

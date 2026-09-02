@@ -96,7 +96,7 @@ Follow the **Execution Instructions** in the reference file from Step 3. After p
 
 ## Auth & Scope Reference
 
-**Always derive scopes from the OAS spec file** (per [api.md](./references/api.md) Step D, `security` field at operation level). For all standard scopes, use the OAS spec — the table below covers the non-obvious cases only.
+**Always derive scopes from the OAS spec file** (per [api.md](./references/api.md) Step 6, `security` field at operation level). For all standard scopes, use the OAS spec — the table below covers the non-obvious cases only.
 
 | Scope | Note |
 |-------|------|
