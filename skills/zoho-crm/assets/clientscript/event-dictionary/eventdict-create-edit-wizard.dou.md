@@ -9,19 +9,19 @@ TECHNICAL_CONSTRAINTS:
 - Custom Button binding configured only from the Buttons page.
 
 REQUIRED_PARAMETERS:
-- **Wizard events**:
+- **Wizard events** (Type: Wizard Event):
     · `onLoad()` — fires when the Client-Script-configured wizard loads. No args.
     · `onChange(field_name)` — `field_name` = API name of the modified field. Supported field types: Single Line, Multi-Line, Email, Phone, Pick List, Date, Number, Currency, Decimal, Percent, Long Integer, Checkbox, URL, Lookup, Owner Lookup, Multi-select Picklist.
     · `onTransition(screen)` — fires after a screen transition completes. `screen` = `{ Name, API Name }` of the target screen.
     · `onBeforeTransition(source_screen, target_screen)` — **Interceptor**. Fires before a transition. Args: `source_screen` = `{ Name, API }`; `target_screen` = `{ Name, API }`. `return false` cancels.
     · `onBeforeSave()` — **Interceptor**. Fires on Save click. `return false` cancels save.
-- **Field events**:
+- **Field events** (Type: Field Event):
     · `onChange(value)` — `value` = current value. Fires on blur. Supported field types: same as Wizard-onChange list above (incl. Multi-select Picklist).
     · `onType(value)` — `value` = current value. Fires per keystroke.
-- **Subform events**:
+- **Subform events** (Type: Subform Event):
     · `onRowAdd(row_data, index)`, `onCellChange(field_name, value, index)`, `onRowDelete(row_data, index)` — non-interceptor.
     · `beforeRowDelete(row_data, index)` — fires after delete-icon click, before row removal; add `return false` to cancel. **Note**: source description matches Interceptor semantics but does NOT carry the explicit `Interceptor` label here (legacy doc behaviour preserved).
-- **Button event**: `onClick(context)` — `context` returns `{ Module API Name, ID }`.
+- **Button event** (Type: Button Event): `onClick(context)` — `context` returns `{ Module API Name, ID }`.
 
 UI_ONLY_ACTIONS:
 - Wizard authoring (screens, transitions, layouts per screen): `Setup → Customization → Wizards → +New Wizard → screens → transitions → assign profiles`. Note: No API equivalent — UI-only.

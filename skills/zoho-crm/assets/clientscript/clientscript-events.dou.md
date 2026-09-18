@@ -3,6 +3,7 @@ SOURCE_DOC: https://www.zoho.com/crm/developer/docs/client-script/client-script-
 TRIGGER_KEYWORDS: onLoad, onChange, onSave, onBeforeUpdate, beforeTransition, onBeforeMandatoryFormSave, BeforeRowDelete, onCustomViewLoad, onType, onTagChanged
 
 TECHNICAL_CONSTRAINTS:
+- For a fast Page→Type→Events lookup table (including the exact "Type" dropdown value and where each Type is configured), see [clientscript-event-type-matrix.dou.md](./clientscript-event-type-matrix.dou.md).
 - Event-configurable pages — Create page, Clone page, Edit page, List Page (Standard), Detail Page (Standard), Detail Page (Canvas), Create Page (Wizard), Edit Page (Wizard), Create / Clone / Edit Page (Canvas), List Page (Canvas), Quick Create popup.
 - Field `onChange` fires when focus leaves the field; `onType` fires as the user keys characters.
 - Layout binding — picking a layout during script creation restricts execution to that layout; multi-layout coverage requires one script per layout.
@@ -27,7 +28,9 @@ REQUIRED_PARAMETERS:
     · Mandatory Fields Form Event: `onBeforeMandatoryFormSave`, `onMandatoryFormLoad`.
     · Blueprint Event: `beforeTransition`.
     · Tag Event: `onTagChanged`.
-    · Canvas Button / Icon / Text Event: `onClick`.
+    · Canvas Button Event: `onClick`.
+    · Icon Event: `onClick`.
+    · Text Event: `onClick`.
     · Subform Event: `onRowAdd`, `onCellChange`, `onRowDelete`, `BeforeRowDelete`, `BeforeRowUpdate`.
     · Notes Related List: `onBeforeAdd`, `onBeforeUpdate`.
     · Button Event.
@@ -37,7 +40,9 @@ REQUIRED_PARAMETERS:
     · Page Event: `onLoad`, `onChange`, `onSave`.
     · Field Event: `onChange`, `onType`, `onBeforeUpdate` (multi-select lookup).
     · Mandatory Fields Form Event: `onMandatoryFormLoad`.
-    · Canvas Button / Icon / Text Event: `onClick`.
+    · Canvas Button Event: `onClick`.
+    · Icon Event: `onClick`.
+    · Text Event: `onClick`.
     · Subform Event: `onRowAdd`, `onCellChange`, `RowDelete`, `BeforeRowDelete`.
     · Button Event.
 - Create / Edit Page (Wizard) events:
@@ -46,7 +51,7 @@ REQUIRED_PARAMETERS:
     · Subform Event: `onRowAdd`, `onCellChange`, `onRowDelete`, `BeforeRowDelete`.
     · Button Event.
 - List Page (Standard) events: Page Event `onCustomViewLoad`, `onBeforeCustomViewChange`; Button Event.
-- List Page (Canvas) events: Page Event `onLoad`, `onBeforeCustomViewChange`; Canvas Button / Icon / Text Event `onClick`.
+- List Page (Canvas) events: Page Event `onLoad`, `onBeforeCustomViewChange`; Canvas Button Event `onClick`; Icon Event `onClick`; Text Event `onClick`; Button Event (per `eventdict-list-canvas.dou.md`, no `context` arg on this surface).
 - Quick Create popup events: Page Event `onLoad`, `onChange`, `onSave`; Field Event `onChange`, `onType`.
 - `return false` cancel semantics — append `return false` at the end of these handlers to cancel the corresponding native action: `onSave` (block record save), `BeforeRowDelete` (block subform row delete), `BeforeRowUpdate` (block subform row update), `beforeTransition` (block Blueprint transition), `onBeforeSave` (block Wizard save), `onBeforeTransition` (block Wizard transition), `onBeforeUpdate` (block Detail-page inline field save), `onBeforeMandatoryFormSave` (block Mandatory Fields Form save).
 - A single Client Script with Page `onChange` can replace many Field `onChange` scripts on the same page when multiple fields need handling.

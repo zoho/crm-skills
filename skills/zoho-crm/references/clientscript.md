@@ -8,9 +8,9 @@ ClientScript = Zoho CRM's **browser-side JavaScript** that runs on CRM pages (cr
 
 ## Execution Instructions
 
-1. Read the relevant DOU Reference Node for the target event, API, or use-case pattern.
-2. Output the complete JavaScript using ZDK APIs only — no `document`, `window`, or external `fetch`.
-3. Confirm the target page type, event, and profile/layout binding requirements from the DOU Reference Nodes section in this file.
+1. Read the relevant DOU Reference Node — for Type + Event selection, start with [clientscript-event-type-matrix.dou.md](../assets/clientscript/clientscript-event-type-matrix.dou.md) (fast lookup); then read the matching `eventdict-*.dou.md` for full argument signatures, interceptor semantics, and failure modes.
+2. Output the complete JavaScript using ZDK APIs only — no `document`, `window`, or external `fetch`. Never wrap the output in an explicit `function <name>(args) { ... }` declaration, and never declare any variable, constant, or helper outside the executing block — the CRM IDE already supplies the enclosing event-handler function for the bound Page + Type + Event, so everything (including API keys/config) belongs inside the pasted body. The one exception: a separate Static Resource `.js` file may contain a real named `function` declaration, invoked by bare name from the main script (see [clientscript-static-resources.dou.md](../assets/clientscript/clientscript-static-resources.dou.md)).
+3. Confirm the target page type, event, and profile/layout binding requirements from the DOU Reference Nodes section in this file. If Category = Module, also state the Type (Event Details → Type dropdown value, e.g. Blueprint Event) alongside the Event name; if Category = Commands, state that no Type/Event applies (Command Palette / keyboard-shortcut trigger only, per [clientscript-commands.dou.md](../assets/clientscript/clientscript-commands.dou.md)).
 
 **Architecture defaults** (apply unless the user explicitly requests otherwise):
 - External service calls: use `ZDK.Apps.CRM.Connection.invoke` — direct `fetch` is rejected in the sandboxed environment.
@@ -25,6 +25,11 @@ Before delivering the code, verify:
 - [ ] Script properly bound in target layout + profile (see Critical Gotcha below)
 - [ ] When both show and hide branches are required — used explicit `if/else` for `setVisibility` / `setReadOnly` (not a boolean expression)
 - [ ] If `setValue` and `showError` are called on the same field — `setValue` is called first
+- [ ] If Category = Module, response states the Type (Event Details → Type dropdown value, e.g. Blueprint Event) alongside the Event name; if Category = Commands, no Type/Event is stated at all
+- [ ] If Type is Button Event or a Canvas element event (Canvas Button/Icon/Text Event), response states the actual creation entry point (Buttons page / Canvas element designer respectively) — not the standard Type dropdown
+- [ ] Depending on Type: if Field Event, response names the specific Field API name chosen (the only genuine Event-Details "after Type" selector); if Subform Event, response's code correctly targets the intended subform via `ZDK.Page.getSubform(<api_name>)` — not described as a creation-time selector; if Page = Wizard Create/Edit, response separately states which Wizard was chosen in Page Details (applies regardless of Type — not an Event-Details/after-Type selector)
+- [ ] Main event script has no top-level `function` wrapper and no variable/constant declared outside the executing block (everything, incl. API keys/config, is inside the body)
+- [ ] Reusable logic is placed in a Static Resource `.js` file (named function) and invoked by bare name — never redeclared as a top-level function inside the main event script
 
 ## Critical Gotchas
 
@@ -35,6 +40,12 @@ A ClientScript is bound to a specific Module + Layout + Page Type + Event + Prof
 **Rule**: When deploying a ClientScript, verify both:
 - `Setup → Developer Hub → Client Script → {script} → Layouts` includes every layout that needs it.
 - `Setup → Users and Control → Security Control → {Profile} → Developer Permissions → Client Script` is enabled for every profile that needs it.
+
+### No global scope in the main event script
+
+The code pasted into the Client Script IDE's code editor is **only the function body** — the CRM UI already supplies the enclosing event-handler function for the bound Page + Type + Event. There is no module-level or global scope that persists across invocations: a `var`/`let`/`const` declared "above" the executing logic, or an explicit `function name(args) { ... }` wrapper around the whole snippet, is not how the pasted body works and does not behave like a real global.
+
+**Rule**: Declare every variable — including config-like values such as an API key — inside the executing block (e.g. inside the `if (field_name === ...) { ... }` gate itself), never above/outside it, and never show a `function` wrapper around the whole script. The only place a real named `function` declaration belongs is a separate Static Resource `.js` file, uploaded independently and invoked by bare function name from inside the main event script (see [clientscript-static-resources.dou.md](../assets/clientscript/clientscript-static-resources.dou.md)).
 
 ## Prerequisites & Hard Limits
 
@@ -65,6 +76,7 @@ A ClientScript is bound to a specific Module + Layout + Page Type + Event + Prof
 | Scope / edition / limits | [clientscript-overview.dou.md](../assets/clientscript/clientscript-overview.dou.md) |
 | Create a Client Script | [clientscript-creation.dou.md](../assets/clientscript/clientscript-creation.dou.md) |
 | Pick page + event + cancel semantics | [clientscript-events.dou.md](../assets/clientscript/clientscript-events.dou.md) |
+| Pick Type + Event via one fast lookup table | [clientscript-event-type-matrix.dou.md](../assets/clientscript/clientscript-event-type-matrix.dou.md) |
 | Command-triggered script | [clientscript-commands.dou.md](../assets/clientscript/clientscript-commands.dou.md) |
 | Client Script IDE usage | [clientscript-ide-components.dou.md](../assets/clientscript/clientscript-ide-components.dou.md) |
 | Static Resources (shared JS) | [clientscript-static-resources.dou.md](../assets/clientscript/clientscript-static-resources.dou.md) |

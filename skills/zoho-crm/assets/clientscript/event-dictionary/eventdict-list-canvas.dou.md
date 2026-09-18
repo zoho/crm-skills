@@ -9,14 +9,13 @@ TECHNICAL_CONSTRAINTS:
 - Custom Button binding configured only from the Buttons page.
 
 REQUIRED_PARAMETERS:
-- **Page events**:
+- **Page events** (Type: Page Event):
     · `onLoad()` — fires when the List Page (Canvas) loads. No args.
     · `onBeforeCustomViewChange(custom_view)` — **Interceptor**. Fires before custom-view change. `custom_view` = `{ ID, name }`. `return false` cancels.
-- **Canvas-element events** (per-row clicks):
-    · `Canvas Button onClick(context)` — `context` = `{ Record ID, Module API name, ID }`.
-    · `Icon onClick(context)` — `context` = `{ Record ID, Module API name, ID }`.
-    · `Text onClick(context)` — `context` = `{ Record ID, Module API name, ID }`.
-- **Button event**: `onClick()` — fires on Client-Script-configured custom button click. **No `context` arg listed on this surface** (contrast with List-Standard which exposes 3 placement-variant contexts).
+- **Canvas Button event** (Type: Canvas Button Event): `Canvas Button onClick(context)` — `context` = `{ Record ID, Module API name, ID }`.
+- **Icon event** (Type: Icon Event): `Icon onClick(context)` — `context` = `{ Record ID, Module API name, ID }`.
+- **Text event** (Type: Text Event): `Text onClick(context)` — `context` = `{ Record ID, Module API name, ID }`.
+- **Button event** (Type: Button Event): `onClick()` — fires on Client-Script-configured custom button click. **No `context` arg listed on this surface** (contrast with List-Standard which exposes 3 placement-variant contexts).
 
 UI_ONLY_ACTIONS:
 - Canvas list-row design (which buttons / icons / text appear per row): `Setup → Customization → Canvas → <list canvas> → Row Design`. Note: No API equivalent — UI-only.

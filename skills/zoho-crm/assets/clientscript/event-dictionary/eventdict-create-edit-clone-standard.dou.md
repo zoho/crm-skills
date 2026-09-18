@@ -10,19 +10,19 @@ TECHNICAL_CONSTRAINTS:
 - Custom Button `onClick` Client Scripts are configured **only** from the Buttons page (not from the Client Script setup list directly); existing scripts then appear on the Client Script setup page.
 
 REQUIRED_PARAMETERS:
-- **Page events**:
+- **Page events** (Type: Page Event):
     · `onLoad()` — fires when the create/clone/edit page loads. No args.
     · `onChange(field_name)` — `field_name` = API name of the modified field. Supported field types: Single Line, Multi-Line, Email, Phone, Pick List, Date, Number, Currency, Decimal, Percent, Long Integer, Checkbox, URL, Lookup, Owner Lookup, Multi-select Picklist.
     · `onSave()` — **Interceptor**. Fires after Save / Save and New click, before persistence. `return false` cancels save.
-- **Field events**:
+- **Field events** (Type: Field Event):
     · `onChange(value)` — `value` = current value in the field. Fires on blur / focus-out after edit. Supported field types: identical to Page-onChange list above (incl. Multi-select Picklist).
     · `onType(value)` — `value` = current value. Fires per keystroke / per type event.
-- **Subform events** (bound to a subform):
+- **Subform events** (Type: Subform Event; bound to a subform):
     · `onRowAdd(row_data, index)` — `row_data` = object details of newly added row; `index` = its row index.
     · `onCellChange(field_name, value, index)` — `field_name` = edited cell's field API name; `value` = new value; `index` = row index.
     · `onRowDelete(row_data, index)` — fires after row deletion. `row_data` / `index` as above.
     · `beforeRowDelete(row_data, index)` — **Interceptor**. Fires after delete-icon click, before row removal. `return false` cancels deletion.
-- **Button event**:
+- **Button event** (Type: Button Event):
     · `onClick(context)` — `context` returns `{ Module API Name, ID }`.
 
 UI_ONLY_ACTIONS:

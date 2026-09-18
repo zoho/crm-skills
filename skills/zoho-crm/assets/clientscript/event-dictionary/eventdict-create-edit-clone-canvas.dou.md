@@ -10,22 +10,21 @@ TECHNICAL_CONSTRAINTS:
 - Custom Button binding configured only from the Buttons page.
 
 REQUIRED_PARAMETERS:
-- **Page events**:
+- **Page events** (Type: Page Event):
     · `onLoad()` — fires when the canvas create/clone/edit page loads. No args.
     · `onChange(field_name)` — `field_name` = API name of the modified field. Supported field types: Single Line, Multi-Line, Email, Phone, Pick List, Date, Number, Currency, Decimal, Percent, Long Integer, Checkbox, URL, Lookup, Owner Lookup, Multi-select Picklist.
     · `onSave()` — **Interceptor**. Fires after Save / Save and New click, before persistence. `return false` cancels save.
-- **Field events**:
+- **Field events** (Type: Field Event):
     · `onChange(value)` — `value` = current value. Fires on blur. Supported field types: same as Page-onChange list above (incl. Multi-select Picklist).
     · `onType(value)` — `value` = current value. Fires per keystroke.
-- **Mandatory Form event**: `onMandatoryFormLoad(field)` — `field` = `{ base field API name, value }`.
-- **Canvas-element events** (no args):
-    · `Canvas Button onClick()` — fires on click of a canvas button.
-    · `Icon onClick()` — fires on click of a canvas icon.
-    · `Text onClick()` — fires on click of canvas text.
-- **Subform events**:
+- **Mandatory Form event** (Type: Mandatory Fields Form Event): `onMandatoryFormLoad(field)` — `field` = `{ base field API name, value }`.
+- **Canvas Button event** (Type: Canvas Button Event): `Canvas Button onClick()` — no args, fires on click of a canvas button.
+- **Icon event** (Type: Icon Event): `Icon onClick()` — no args, fires on click of a canvas icon.
+- **Text event** (Type: Text Event): `Text onClick()` — no args, fires on click of canvas text.
+- **Subform events** (Type: Subform Event):
     · `onRowAdd(row_data, index)`, `onCellChange(field_name, value, index)`, `onRowDelete(row_data, index)` — non-interceptor.
     · `beforeRowDelete(row_data, index)` — **Interceptor**. `return false` cancels deletion.
-- **Button event**: `onClick(context)` — `context` returns `{ Module API Name, ID }`.
+- **Button event** (Type: Button Event): `onClick(context)` — `context` returns `{ Module API Name, ID }`.
 
 UI_ONLY_ACTIONS:
 - Canvas-element script binding — `Setup → Customization → Canvas → <canvas> → select element (Button / Icon / Text) → Actions → Client Script`. Note: No API equivalent — UI-only.

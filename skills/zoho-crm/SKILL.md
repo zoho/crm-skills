@@ -3,7 +3,7 @@ name: zoho-crm
 description: 'Zoho CRM v8.0 orchestration layer — primitive selection, code generation, and validation across all CRM developer tools: REST API, Deluge Functions, ClientScript, Widgets, COQL, Queries Workbench, and Connections. Works whether or not MCP tools are connected. Trigger on "Zoho CRM", "Deluge script", "ClientScript", "COQL", "CRM widget", "zoho.crm.*", "invokeurl", "CRM automation", "CRM integration", "CRM query", "Queries Workbench", "Blueprint", "Workflow Rule", or any CRM module operation. Do NOT use for Catalyst, Zoho Creator, or other Zoho products — use the appropriate product skill instead.' 
 argument-hint: 'Describe your Zoho CRM use case (e.g. "fetch all open leads", "write a Deluge script to update a field", "create a ClientScript for a custom button")'
 metadata: 
-  version: "0.0.1"
+  version: "0.0.2"
 ---
 
 # zoho-crm

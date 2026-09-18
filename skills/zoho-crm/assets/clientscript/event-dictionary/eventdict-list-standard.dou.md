@@ -9,10 +9,10 @@ TECHNICAL_CONSTRAINTS:
 - Custom Button binding — configured only from the Buttons page; existing scripts appear on the Client Script setup list after creation.
 
 REQUIRED_PARAMETERS:
-- **Page events**:
+- **Page events** (Type: Page Event):
     · `onCustomViewLoad(custom_view)` — fires when a custom view loads. `custom_view` = `{ ID, name }` of the current custom view.
     · `onBeforeCustomViewChange(custom_view)` — **Interceptor**. Fires before the user changes the current custom view. `custom_view` = `{ ID, name }`. `return false` cancels the change.
-- **Button event**: `onClick(context)` — `context` is **shape-variant by placement**:
+- **Button event** (Type: Button Event): `onClick(context)` — `context` is **shape-variant by placement**:
     · Util Menu placement → `{ Module API Name, ID }`.
     · Each Record placement → `{ Module API Name, ID, record ID }`.
     · Mass Action Menu placement → `{ Module API Name, ID, selected record IDs (array) }`.

@@ -9,22 +9,24 @@ TECHNICAL_CONSTRAINTS:
 - Detail Page has no direct field write-through; field edits go through Mandatory Form or Web-API Update Record + `$Client.refresh()`.
 
 REQUIRED_PARAMETERS:
-- **Page event**: `onLoad()` — fires when the canvas page loads. No args.
-- **Field event**: `onBeforeUpdate(value)` — **Interceptor**. Fires on tick-icon click after inline field edit. `value` = current value. `return false` cancels. Supported field types: Single Line, Multi-Line, Email, Phone, Pick List, Date, Number, Currency, Decimal, Percent, Long Integer, Checkbox, URL, Lookup, Owner Lookup. **Multi-select Picklist is NOT in this list** (contrast with standard Create/Edit `onChange` list).
-- **Mandatory Fields Form events**:
+- **Page event** (Type: Page Event): `onLoad()` — fires when the canvas page loads. No args.
+- **Field event** (Type: Field Event): `onBeforeUpdate(value)` — **Interceptor**. Fires on tick-icon click after inline field edit. `value` = current value. `return false` cancels. Supported field types: Single Line, Multi-Line, Email, Phone, Pick List, Date, Number, Currency, Decimal, Percent, Long Integer, Checkbox, URL, Lookup, Owner Lookup. **Multi-select Picklist is NOT in this list** (contrast with standard Create/Edit `onChange` list).
+- **Mandatory Fields Form events** (Type: Mandatory Fields Form Event):
     · `onBeforeMandatoryFormSave(value)` — **Interceptor**. `value` = values of the fields in Mandatory form + base-field current value. `return false` cancels. **Note: arg name is `value`, not `form`** (Detail-Standard uses `form`).
     · `onMandatoryFormLoad(field)` — `field` = `{ base field API name, value }`.
-- **Blueprint event**: `beforeTransition(transition)` — **Interceptor**. `transition` = `{ ID, name }`. `return false` cancels.
-- **Tag event**: `onTagChanged(tags_added, tags_removed)` — **two** args: `tags_added` = list of tags added; `tags_removed` = list of tags removed. (No `tag` arg here, contrast with Detail-Standard which has 3-arg `(tag, added, removed)`.)
-- **Canvas-element events** (no args): `Canvas Button onClick()`, `Icon onClick()`, `Text onClick()`.
-- **Subform events**:
+- **Blueprint event** (Type: Blueprint Event): `beforeTransition(transition)` — **Interceptor**. `transition` = `{ ID, name }`. `return false` cancels.
+- **Tag event** (Type: Tag Event): `onTagChanged(tags_added, tags_removed)` — **two** args: `tags_added` = list of tags added; `tags_removed` = list of tags removed. (No `tag` arg here, contrast with Detail-Standard which has 3-arg `(tag, added, removed)`.)
+- **Canvas Button event** (Type: Canvas Button Event): `Canvas Button onClick()` — no args.
+- **Icon event** (Type: Icon Event): `Icon onClick()` — no args.
+- **Text event** (Type: Text Event): `Text onClick()` — no args.
+- **Subform events** (Type: Subform Event):
     · `onRowAdd(row_data, index)`, `onCellChange(field_name, value, index)`, `onRowDelete(row_data, index)` — non-interceptor.
     · `beforeRowDelete(row_data, index)` — **Interceptor**. `return false` cancels deletion.
     · `beforeRowUpdate(row_data, index)` — **Interceptor**. `return false` cancels update.
-- **Button event**: `onClick(context)` — **shape-variant**:
+- **Button event** (Type: Button Event): `onClick(context)` — **shape-variant**:
     · In Record → `{ Module API Name, ID }`.
     · Related List → `{ Module API Name of the related list, ID, selected record ID }`.
-- **Notes events**:
+- **Notes events** (Type: Notes Related List — no "Event" suffix):
     · `onBeforeAdd(notes)` — **Interceptor**. `notes` = `{ title, content }`. `return false` blocks add.
     · `onBeforeUpdate(notes)` — **Interceptor**. `notes` = `{ title, content }`. `return false` blocks update.
 

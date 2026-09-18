@@ -10,11 +10,11 @@ TECHNICAL_CONSTRAINTS:
 - Detail Page (Canvas) on mobile is reduced — only Page `onLoad`, Mandatory Form `onBeforeMandatoryFormSave` / `onMandatoryFormLoad`, Blueprint `beforeTransition`, and Canvas Button / Icon / Text `onClick`. Subform, Notes, Tag, Field, and standard custom Button events are **not** listed for mobile Detail Canvas.
 
 REQUIRED_PARAMETERS:
-- Mobile event matrix (verbatim from source):
-    · **Create / Edit / Clone Page (Standard)** — Page: `onLoad`, `onChange`, `onSave`; Field: `onChange`, `onType`; Subform: `onCellChange`, `onRowAdd`, `beforeRowDelete`, `onRowDelete`; Custom Button: `onClick`.
-    · **Create / Edit Page (Wizard)** — Wizard: `onLoad`, `onChange`, `onTransition`, `onBeforeTransition`, `onBeforeSave`; Field: `onChange`, `onType`; Subform: `onCellChange`, `onRowAdd`, `beforeRowDelete`, `onRowDelete`; Custom Button: `onClick`.
-    · **Detail Page (Standard)** — Page: `onLoad`; Mandatory Form: `onBeforeMandatoryFormSave`, `onMandatoryFormLoad`; Blueprint: `beforeTransition`, `afterTransition`; Subform: `onCellChange`, `onRowAdd`, `beforeRowDelete`, `beforeRowUpdate`, `onRowDelete`; Custom Button: `onClick`.
-    · **Detail Page (Canvas)** — Page: `onLoad`; Mandatory Form: `onBeforeMandatoryFormSave`, `onMandatoryFormLoad`; Blueprint: `beforeTransition`; Canvas Button: `onClick`; Icon: `onClick`; Text: `onClick`.
+- Mobile event matrix (verbatim from source, with Type labels added for cross-reference with [clientscript-event-type-matrix.dou.md](./clientscript-event-type-matrix.dou.md)):
+    · **Create / Edit / Clone Page (Standard)** — Page (Type: Page Event): `onLoad`, `onChange`, `onSave`; Field (Type: Field Event): `onChange`, `onType`; Subform (Type: Subform Event): `onCellChange`, `onRowAdd`, `beforeRowDelete`, `onRowDelete`; Custom Button (Type: Button Event): `onClick`.
+    · **Create / Edit Page (Wizard)** — Wizard (Type: Wizard Event): `onLoad`, `onChange`, `onTransition`, `onBeforeTransition`, `onBeforeSave`; Field (Type: Field Event): `onChange`, `onType`; Subform (Type: Subform Event): `onCellChange`, `onRowAdd`, `beforeRowDelete`, `onRowDelete`; Custom Button (Type: Button Event): `onClick`.
+    · **Detail Page (Standard)** — Page (Type: Page Event): `onLoad`; Mandatory Form (Type: Mandatory Fields Form Event): `onBeforeMandatoryFormSave`, `onMandatoryFormLoad`; Blueprint (Type: Blueprint Event): `beforeTransition`, `afterTransition`; Subform (Type: Subform Event): `onCellChange`, `onRowAdd`, `beforeRowDelete`, `beforeRowUpdate`, `onRowDelete`; Custom Button (Type: Button Event): `onClick`.
+    · **Detail Page (Canvas)** — Page (Type: Page Event): `onLoad`; Mandatory Form (Type: Mandatory Fields Form Event): `onBeforeMandatoryFormSave`, `onMandatoryFormLoad`; Blueprint (Type: Blueprint Event): `beforeTransition`; Canvas Button (Type: Canvas Button Event): `onClick`; Icon (Type: Icon Event): `onClick`; Text (Type: Text Event): `onClick`.
 - Sample scenario in source: Leads-record duplicate-check on save — compare other records' Email / Phone and `return false` to block save with an error message.
 
 UI_ONLY_ACTIONS:

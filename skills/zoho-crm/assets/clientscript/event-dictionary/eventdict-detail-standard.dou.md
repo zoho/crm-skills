@@ -10,21 +10,21 @@ TECHNICAL_CONSTRAINTS:
 - Notes events scope to the Notes Related List only.
 
 REQUIRED_PARAMETERS:
-- **Page event**: `onLoad()` — fires on detail-page load. No args.
-- **Field event**: `onBeforeUpdate(value)` — **Interceptor**. Fires on tick-icon click after inline field edit. `value` = current value. `return false` cancels the save. (Source does not enumerate supported field types here.)
-- **Blueprint event**: `beforeTransition(transition)` — **Interceptor**. `transition` = `{ ID, name }` of the current transition. `return false` cancels the blueprint transition.
-- **Mandatory Fields Form events**:
+- **Page event** (Type: Page Event): `onLoad()` — fires on detail-page load. No args.
+- **Field event** (Type: Field Event): `onBeforeUpdate(value)` — **Interceptor**. Fires on tick-icon click after inline field edit. `value` = current value. `return false` cancels the save. (Source does not enumerate supported field types here.)
+- **Blueprint event** (Type: Blueprint Event): `beforeTransition(transition)` — **Interceptor**. `transition` = `{ ID, name }` of the current transition. `return false` cancels the blueprint transition.
+- **Mandatory Fields Form events** (Type: Mandatory Fields Form Event):
     · `onBeforeMandatoryFormSave(form)` — **Interceptor**. `form` = values of all fields in the mandatory form + current value of the base field. `return false` cancels.
     · `onMandatoryFormLoad(form)` — fires when the mandatory-form pop-up opens. `form` = same shape.
-- **Tag event**: `onTagChanged(tag, added, removed)` — **three** args: `tag` = list of tags; `added` = list of tags added; `removed` = list of tags removed. Fires on Save of the Add-Tags dialog.
-- **Subform events**:
+- **Tag event** (Type: Tag Event): `onTagChanged(tag, added, removed)` — **three** args: `tag` = list of tags; `added` = list of tags added; `removed` = list of tags removed. Fires on Save of the Add-Tags dialog.
+- **Subform events** (Type: Subform Event):
     · `onRowAdd(row_data, index)`, `onCellChange(field_name, value, index)`, `onRowDelete(row_data, index)` — non-interceptor; signatures identical to create/edit/clone.
     · `beforeRowDelete(row_data, index)` — **Interceptor**. `return false` cancels deletion.
     · `beforeRowUpdate(row_data, index)` — **Interceptor**. Fires after tick-icon click during inline row update. `return false` cancels.
-- **Button event**: `onClick(context)` — `context` is **shape-variant**:
+- **Button event** (Type: Button Event): `onClick(context)` — `context` is **shape-variant**:
     · In Record placement → `{ Module API Name, ID }`.
     · Related List placement → `{ Module API Name of the related list, ID, selected record ID }`.
-- **Notes events** (Related List Notes only):
+- **Notes events** (Type: Notes Related List — no "Event" suffix; Related List Notes only):
     · `onBeforeAdd(notes)` — **Interceptor**. `notes` = `{ title, content }` of the note about to be added. `return false` blocks the add.
     · `onBeforeUpdate(notes)` — **Interceptor**. `notes` = `{ title, content }` of the note about to be updated. `return false` blocks the update.
 

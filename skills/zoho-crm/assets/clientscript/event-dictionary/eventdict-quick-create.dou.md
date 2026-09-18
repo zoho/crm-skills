@@ -8,11 +8,11 @@ TECHNICAL_CONSTRAINTS:
 - Interceptor event — Page `onSave`. `return false` blocks the record-save.
 
 REQUIRED_PARAMETERS:
-- **Page events**:
+- **Page events** (Type: Page Event):
     · `onLoad()` — fires when the Quick Create popup loads. No args.
     · `onChange(field_name)` — `field_name` = API name of the field that was changed.
     · `onSave()` — **Interceptor**. Fires after Save / Save and New click, before persistence. `return false` cancels save.
-- **Field events**:
+- **Field events** (Type: Field Event):
     · `onChange(value)` — `value` = current value in the field. Fires on blur / focus-out after edit.
     · `onType(value)` — `value` = current value. Fires per keystroke.
 - Source does **not** enumerate Quick-Create-specific supported field types — assume the parent module's field set unless verified otherwise.
