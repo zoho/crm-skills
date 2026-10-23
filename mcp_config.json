@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "ZohoMCP": {
+      "serverUrl": "https://crm.zohomcp.in/mcp/message"
+    }
+  }
+}

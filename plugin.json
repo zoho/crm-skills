@@ -1,0 +1,20 @@
+{
+  "name": "zoho-crm-plugin",
+  "displayName": "Zoho CRM",
+  "version": "1.0.0",
+  "description": "Build on Zoho CRM v8: REST API, Deluge functions, ClientScript, widgets, COQL and connections, with live CRM data through your Zoho MCP server.",
+  "logo": "assets/logo.png",
+  "suggestedPrompts": [
+    "Write a Deluge function that updates a Deal's stage when its related Task is closed",
+    "Write a COQL query for all open Leads created this month, with their owner names",
+    "Create a ClientScript that hides the Fax field on Contacts when Lead Source is Web"
+  ],
+  "keywords": ["zoho", "zoho-crm", "crm", "deluge", "coql", "clientscript", "widgets", "mcp"],
+  "author": {
+    "name": "Zoho Corporation",
+    "url": "https://www.zoho.com"
+  },
+  "homepage": "https://github.com/zoho/crm-skills",
+  "repository": "https://github.com/zoho/crm-skills",
+  "license": "Apache-2.0"
+}
